@@ -1,0 +1,18 @@
+@import "./components/inputTextWithLabel";
+@import "./components/inputTextAreaWithLabel.scss";
+@import "./components/inputSwitchWithLabel.scss";
+@import "./components/productProfile.scss";
+@import "./components/inputSelectDropdown.scss";
+@import "./components/inputMultiSelectWithModal.scss";
+@import "./components/titles.scss";
+
+
+.ui.search.dropdown>.text {
+    top: -5px !important;
+  }
+  .ui.search.dropdown.analytics-dropdown>.text {
+    top: 0px !important;
+  }
+  .ui.multiple.search.dropdown>.text {
+    top: 0px !important
+  }

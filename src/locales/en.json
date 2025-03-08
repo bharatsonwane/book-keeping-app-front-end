@@ -1,0 +1,25 @@
+{
+  "translation": {
+    "sidebar.dashboard": "dashboard",
+    "sidebar.services": "Services",
+    "sidebar.work": "Work",
+    "sidebar.team": "Team",
+    "sidebar.schema": "Schema",
+    "header.searchPlaceholder": "Search",
+    "header.searchButtonTitle": "Search",
+    "__2AN":"__2AN",
+    "_Brand Name":"Brand Name",
+    "_Product Name":"Product Name",
+    "_Regulated Product Name":"Regulated Product Name",
+    "_Description Short":"Description Short",
+    "_Description":"Description",
+    "_Ingredients":"Ingredients",
+    "_Website Url":"Website Url",
+    "_Overlay Url":"Overlay Url",
+    "_Public Email":"Public Email",
+    "_Public Telephone":"Public Telephone",
+    "_Claims":"Claims",
+    "_Calculated for":"Calculated for"
+
+  }
+}

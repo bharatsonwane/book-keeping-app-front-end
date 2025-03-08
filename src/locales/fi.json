@@ -1,0 +1,10 @@
+{
+  "translation": {
+    "sidebar.dashboard": "kojelauta",
+    "sidebar.services": "Palvelut",
+    "sidebar.work": "Tehdä työtä",
+    "sidebar.team": "Tiimi",
+    "header.searchPlaceholder": "Hae",
+    "header.searchButtonTitle": "Hae"
+  }
+}
