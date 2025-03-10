@@ -8,6 +8,14 @@ import SchemaFieldRenderer from "./SchemaFieldRenderer";
 function SchemaTabRenderer({ schema }) {
   const [selectedTabName, setSelectedTabName] = useState("");
 
+  const [languageData, setLanguageData] = useState({
+    selectedLanguage: "en",
+    languageList: [
+      { label: "English", value: "en" },
+      { label: "Finnish", value: "fi" },
+    ],
+  });
+
   const { tabData, parentTabName } = useMemo(() => {
     if (selectedTabName) {
       const { tabData, parentTabName } = getTabDataAndParentTabNameByName(
@@ -24,6 +32,10 @@ function SchemaTabRenderer({ schema }) {
     const tabName = getInitialTabName(schema);
     setSelectedTabName(tabName);
   }, [schema?.schemaName, schema?.version]);
+
+  const handleChangeLanguage = (selectedLanguage) => {
+    setLanguageData({ ...languageData, selectedLanguage });
+  };
 
   return (
     <div
@@ -92,7 +104,13 @@ function SchemaTabRenderer({ schema }) {
       </div>
       <div className="product-profile--content" style={{ minHeight: 300 }}>
         <div className="row">
-          {!!tabData && <SchemaFieldRenderer node={tabData} />}
+          {!!tabData && (
+            <SchemaFieldRenderer
+              node={tabData}
+              languageData={languageData}
+              handleChangeLanguage={handleChangeLanguage}
+            />
+          )}
         </div>
       </div>
     </div>

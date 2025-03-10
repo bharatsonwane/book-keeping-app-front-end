@@ -7,7 +7,10 @@ import { InputSwitchWithLable } from "src/components/inputComponents/InputSwitch
 import { InputTextareaWithLabel } from "src/components/inputComponents/InputTextareaWithLabel";
 import { InputTextWithLabel } from "src/components/inputComponents/InputTextWithLabel";
 import { useDispatch, useSelector } from "react-redux";
-import { formFieldDataUpdateAction, formFieldValidationAction } from "src/slice/bookKeeping";
+import {
+  formFieldDataUpdateAction,
+  formFieldValidationAction,
+} from "src/slice/bookKeeping";
 import { getValidationErrorForFieldForZod } from "src/helper/validationZodHelper";
 
 function SchemaFormFieldRender(props) {
@@ -146,7 +149,60 @@ function SchemaFormFieldRender(props) {
   return <></>;
 }
 
-function SchemaFieldRenderer({ node }) {
+const RenderMultilingualField = ({
+  node,
+  prevNode,
+  languageData,
+  handleChangeLanguage = () => {},
+}) => {
+  if (node?.isMultilingual && (!prevNode || !prevNode?.isMultilingual)) {
+    return (
+      <div
+        key={`multilingualTabStart_${node.dataMappingName}`}
+        style={{ margin: "6px" }}
+        className="d-flex product-profile-navbar align-items-center border-0"
+      >
+        <div className="fw-bold me-3">Language</div>
+        <div id="navbarProductProfile">
+          <ul className="nav nav-pills">
+            {languageData?.languageList?.map((item, index) => (
+              <React.Fragment key={index}>
+                <li className="nav-item">
+                  <a
+                    className="nav-link fw-normal"
+                    role="button"
+                    data-tabselect={
+                      item.value == languageData?.selectedLanguage
+                    }
+                    onClick={() => handleChangeLanguage(item.value)}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              </React.Fragment>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  } else if (!node?.isMultilingual && prevNode?.isMultilingual) {
+    return (
+      <div
+        key={`multilingualTabEnd_${node.dataMappingName}`}
+        style={{ marginBottom: "10px" }}
+      ></div>
+    );
+  }
+
+  return <></>;
+};
+
+function SchemaFieldRenderer({
+  node,
+  prevNode,
+  languageData,
+  handleChangeLanguage = () => {},
+}) {
   const dispatch = useDispatch();
 
   const formDataObject = useSelector(
@@ -156,35 +212,24 @@ function SchemaFieldRenderer({ node }) {
     (state) => state.bookKeeping.formValidation
   );
 
-  const handleInputChange = (e) => {
-    dispatch(
-      formFieldDataUpdateAction({
-        name: e.target.name,
-        value: e.target.value,
-      })
-    );
-  };
 
-  const handleBlurChange = async (e, item) => {
-    console.log("onblur", e.target.value, item);
-    // /** field validation */
-    const {dataMappingName, errorMessage} = await getValidationErrorForFieldForZod(item, e.target.value);
-    dispatch(
-      formFieldValidationAction({
-        dataMappingName: dataMappingName,
-        errorMessage: errorMessage,
-        touched: true,
-      })
-    );
-  };
+  const name = (() => {
+    if (node.isMultilingual) {
+      return `${node.dataMappingName}.${languageData.selectedLanguage}`;
+    }
+    return node.dataMappingName;
+  })();
 
-  const value = node.dataMappingName
-    ? _.get(formDataObject, node.dataMappingName, "")
-    : null;
-
-  if (node.name === "taxes.percentage") {
-    console.log("value", value);
-  }
+  const value = (() => {
+    if (node.isMultilingual) {
+      return _.get(
+        formDataObject,
+        `${node.dataMappingName}.${languageData.selectedLanguage}`,
+        ""
+      );
+    }
+    return _.get(formDataObject, node.dataMappingName, "");
+  })();
 
   const isAllTouched = formValidationObject?.isAllTouched;
 
@@ -196,15 +241,54 @@ function SchemaFieldRenderer({ node }) {
     ? _.get(formValidationObject, `touched[${node.dataMappingName}]`, false)
     : false;
 
+
+
+  const handleInputChange = (e) => {
+    dispatch(
+      formFieldDataUpdateAction({
+        name: name,
+        value: e.target.value,
+      })
+    );
+  };
+
+  const handleBlurChange = async (e, item) => {
+    console.log("onblur", e.target.value, item);
+    // /** field validation */
+    const { dataMappingName, errorMessage } =
+      await getValidationErrorForFieldForZod(item, e.target.value);
+    dispatch(
+      formFieldValidationAction({
+        dataMappingName: dataMappingName,
+        errorMessage: errorMessage,
+        touched: true,
+      })
+    );
+  };
+
+
   return (
     <Fragment>
+      <RenderMultilingualField
+        key={`multilingualTab_${node.dataMappingName}`}
+        node={node}
+        prevNode={prevNode}
+        languageData={languageData}
+        handleChangeLanguage={handleChangeLanguage}
+      />
+
       {node.childrenType === "formField" || node.childrenType === "field" ? (
         <Fragment>
-          {node.children?.map((childNode) => (
+          {node.children?.map((childNode, index, list) => (
             <SchemaFieldRenderer
+              key={`${childNode.type}_${childNode.label}_${index}`}
               node={childNode}
+              prevNode={index > 0 ? list[index - 1] : null}
+              languageData={languageData}
+              handleChangeLanguage={handleChangeLanguage}
               formDataObject={formDataObject}
               formValidationObject={formValidationObject}
+              isMultilingual={false}
             />
           ))}
         </Fragment>
@@ -220,17 +304,23 @@ function SchemaFieldRenderer({ node }) {
         >
           <div style={{ fontSize: 16, fontWeight: "600" }}>{node.label}</div>
           <div className="row">
-            {node.children.map((childNode) => (
+            {node.children.map((childNode, index, list) => (
               <SchemaFieldRenderer
+                key={`${childNode.type}_${childNode.label}_${index}`}
                 node={childNode}
+                prevNode={index > 0 ? list[index - 1] : null}
+                languageData={languageData}
+                handleChangeLanguage={handleChangeLanguage}
                 formDataObject={formDataObject}
                 formValidationObject={formValidationObject}
+                isMultilingual={false}
               />
             ))}
           </div>
         </div>
       ) : (
         <SchemaFormFieldRender
+          key={`${node.type}_${node.label}`}
           node={node}
           value={value}
           isAllTouched={isAllTouched}
