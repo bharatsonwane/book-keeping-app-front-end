@@ -11,9 +11,24 @@ import { MdTextFields } from "react-icons/md";
 
 export const InputSwitchWithLable = (props) => {
     const {
-        type, label, name, value, checked,
-        readOnly, disabled, showToolTip, tooltipText, error, touched, isAllTouched, onChange, className, 
-        onColor, offColor, onHandleColor, offHandleColor
+        type = 'switch', 
+        label = '', 
+        name = '', 
+        value = undefined, 
+        checked = false,
+        readOnly = false, 
+        disabled = false, 
+        showToolTip = false, 
+        tooltipText = '', 
+        error = '', 
+        touched = false, 
+        isAllTouched = false, 
+        onChange = () => {}, 
+        className = '', 
+        onColor = '#32cd32', 
+        offColor = '#6c757d', 
+        onHandleColor = '#32cd32', 
+        offHandleColor = '#ffffff'
     } = props
 
 

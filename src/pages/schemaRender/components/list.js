@@ -15,9 +15,9 @@ const SchemaRenderList = () => {
   const [loading, setLoading] = useState(true)
   const { selectedProductSchema } = _state
 
-  console.log("_state data is",_state?.formObject)
+  // console.log("_state data is",_state?.formObject)
 
-  console.log("validation obj is",_state?.productFormValidation)
+  // console.log("validation obj is",_state?.productFormValidation)
 
   useEffect(() => {
     getProductData_template()
@@ -43,6 +43,8 @@ const SchemaRenderList = () => {
       setLoading(false)
     }
   }
+
+  console.log("selectedProductSchema", selectedProductSchema)
 
   return (
     <>

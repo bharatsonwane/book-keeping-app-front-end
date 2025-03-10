@@ -91,10 +91,9 @@ const CommonTabComponent = (props) => {
     }
 
     const handleBlurChange = async (e, item) => {
-        debugger
         /** field validation */
-        const { nameUpdated, errorMessage } = await getValidationErrorForFieldForYup(item, e.target.value)
-        dispatch(formFieldValidationAction({ nameUpdated: nameUpdated, errorMessage: errorMessage, touched: true, }))
+        const { dataMappingName, errorMessage } = await getValidationErrorForFieldForYup(item, e.target.value)
+        dispatch(formFieldValidationAction({ dataMappingName: dataMappingName, errorMessage: errorMessage, touched: true, }))
     }
 
 

@@ -58,6 +58,13 @@ const Menu = [
     icon: <i className="me-1 bi bi-people-fill"></i>,
     vissbleOnSmallScrren: true,
   },
+  {
+    key: "routekey-book-keeping",
+    label: "sidebar.book-keeping",
+    path: "/app/book-keeping",
+    icon: <i className="me-1 bi bi-people-fill"></i>,
+    vissbleOnSmallScrren: true,
+  },
 ];
 
 export default Menu;

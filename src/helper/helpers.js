@@ -332,8 +332,8 @@ const getMergedComponent_updatedNameValue_flattenJson = (productSchema) => {
 
   const objectHandle = (fieldObject, parentName) => {
     if (fieldObject.tabName && fieldObject.type) {
-      const nameUpdated = parentName ? `${parentName}.${fieldObject.name}` : `${fieldObject.name}`
-      let newItemObject = { ...fieldObject, nameUpdated: nameUpdated }
+      const dataMappingName = parentName ? `${parentName}.${fieldObject.name}` : `${fieldObject.name}`
+      let newItemObject = { ...fieldObject, dataMappingName: dataMappingName }
 
       const componentfieldItem = commonComponentSchema.find((componentItem) => componentItem.name === fieldObject.name)
       if (componentfieldItem) {
@@ -355,8 +355,8 @@ const getMergedComponent_updatedNameValue_flattenJson = (productSchema) => {
           }
         })
       } catch (error) {
-        const nameUpdated = parentName ? `${parentName}.${fieldObject.name}` : `${fieldObject.name}`
-        updatedFlattenSchema.push({ ...fieldObject, nameUpdated })
+        const dataMappingName = parentName ? `${parentName}.${fieldObject.name}` : `${fieldObject.name}`
+        updatedFlattenSchema.push({ ...fieldObject, dataMappingName })
       }
     }
   }
@@ -368,7 +368,7 @@ const getMergedComponent_updatedNameValue_flattenJson = (productSchema) => {
   updatedFlattenSchema = updatedFlattenSchema.map((fieldItem) => {
     if (fieldItem.dependsOnName) {
       const dependsOnObject = updatedFlattenSchema.find((item) => item.name === fieldItem.dependsOnName)
-      const newFieldItem = { ...fieldItem, dependsOnNameUpdated: dependsOnObject.nameUpdated }
+      const newFieldItem = { ...fieldItem, dependsOnDataMappingName: dependsOnObject.dataMappingName }
       return newFieldItem
     }
     return fieldItem
@@ -378,12 +378,12 @@ const getMergedComponent_updatedNameValue_flattenJson = (productSchema) => {
   return updatedFlattenSchema
 }
 
-export const getSpecificFlattenSchemaPath_ObjectForItemName = (productFlattenSchema, itemNameUpdated) => {
+export const getSpecificFlattenSchemaPath_ObjectForItemName = (productFlattenSchema, itemDataMappingName) => {
   let fieldObject = {}
   let fieldPath = ''
 
   productFlattenSchema.forEach((item, index) => {
-    if (item.nameUpdated === itemNameUpdated) {
+    if (item.dataMappingName === itemDataMappingName) {
       fieldObject = item
       fieldPath = `[${index}]`
     }

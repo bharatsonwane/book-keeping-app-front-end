@@ -36,7 +36,7 @@ export const getValidationErrorObjectForYup = async (formFlattenJsonArray, formD
   const updatedFormFlattenJsonArray = formFlattenJsonArray.map((item) => {
     const newItem = {
       ...item,
-      nameUpdated: item.nameUpdated ? item.nameUpdated : item.name
+      dataMappingName: item.dataMappingName ? item.dataMappingName : item.name
     }
     return newItem
   })
@@ -46,8 +46,8 @@ export const getValidationErrorObjectForYup = async (formFlattenJsonArray, formD
     if (updatedFormFlattenJsonArray && updatedFormFlattenJsonArray[0]) {
       const newFormData = {}
       updatedFormFlattenJsonArray.forEach((item) => {
-        const value = _.get(formData, item.nameUpdated)
-        newFormData[item.nameUpdated] = value
+        const value = _.get(formData, item.dataMappingName)
+        newFormData[item.dataMappingName] = value
       })
 
       const yepSchema = updatedFormFlattenJsonArray.reduce(createYupSchema, {});
@@ -68,7 +68,7 @@ export const getValidationErrorObjectForYup = async (formFlattenJsonArray, formD
       } catch (error) {
         itemPath = item.path
       }
-      const errorFieldObject = updatedFormFlattenJsonArray.find((item) => item.nameUpdated === itemPath)
+      const errorFieldObject = updatedFormFlattenJsonArray.find((item) => item.dataMappingName === itemPath)
       errorFieldList.push(errorFieldObject)
       _.set(errorMessageObject, itemPath, item.message)
     })
@@ -77,7 +77,7 @@ export const getValidationErrorObjectForYup = async (formFlattenJsonArray, formD
 }
 
 export function createYupSchema(schema, config) {
-  const { nameUpdated, validationType, validations = [] } = config;
+  const { dataMappingName, validationType, validations = [] } = config;
   const newValidations = [
     ...validations,
     {
@@ -97,20 +97,22 @@ export function createYupSchema(schema, config) {
     }
     validator = validator[type](...params);
   });
-  schema[nameUpdated] = validator;
+  schema[dataMappingName] = validator;
   return schema;
 }
 
 /**
  * @param {*} fieldObject 
  * @param {*} fieldValue 
- * @returns {nameUpdated, errorMessage}
+ * @returns {dataMappingName, errorMessage}
  */
 export const getValidationErrorForFieldForYup = async (fieldObject, fieldValue) => {
+  debugger
   const newFieldValue = {}
-  const nameUpdated = fieldObject.nameUpdated ? fieldObject.nameUpdated : fieldObject.name;
-  _.set(newFieldValue, nameUpdated, fieldValue)
+  const dataMappingName = fieldObject.dataMappingName ? fieldObject.dataMappingName : fieldObject.name;
+  _.set(newFieldValue, dataMappingName, fieldValue)
   const { errorMessageObject } = await getValidationErrorObjectForYup([fieldObject], newFieldValue)
-  return { nameUpdated: nameUpdated, errorMessage: _.get(errorMessageObject, nameUpdated, "") }
+  console.log("errorMessageObject", errorMessageObject)
+  return { dataMappingName: dataMappingName, errorMessage: _.get(errorMessageObject, dataMappingName, "") }
 }
   

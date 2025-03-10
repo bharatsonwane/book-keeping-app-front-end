@@ -18,7 +18,7 @@ export function InputMultiSelectWithModal(props) {
     touched, isAllTouched, onBlur, modalTitle,
   } = props;
 
-  console.log("modal test is",options)
+  // console.log("modal test is",options)
 
 
   const { t, i18n } = useTranslation('common');

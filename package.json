@@ -47,13 +47,16 @@
     "workbox-routing": "^6.6.0",
     "workbox-strategies": "^6.6.0",
     "workbox-streams": "^6.6.0",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "zod": "^3.24.2",
+    "zod-validation-error": "^3.4.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start1": "node zod1"
   },
   "eslintConfig": {
     "extends": [

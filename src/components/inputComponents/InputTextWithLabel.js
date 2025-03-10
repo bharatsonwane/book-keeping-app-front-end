@@ -47,7 +47,7 @@ export function InputTextWithLabel(props) {
         touched, isAllTouched, onBlur,
     } = props
 
-    console.log("all input type text props are",props)
+    // console.log("all input type text props are",props)
 
     const { t } = useTranslation('common');
 

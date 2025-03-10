@@ -37,7 +37,7 @@ export const SchemaSlice = createSlice({
     updatedFlattenSchemaFormItemAction: (state, action) => {
       const { formField } = action.payload
       const currentProductFlattenSchema = current(state.selectedProductSchema.productFlattenSchema);
-      const { fieldPath } = getSpecificFlattenSchemaPath_ObjectForItemName(currentProductFlattenSchema, formField.nameUpdated)
+      const { fieldPath } = getSpecificFlattenSchemaPath_ObjectForItemName(currentProductFlattenSchema, formField.dataMappingName)
       _.set(state.selectedProductSchema.productFlattenSchema, fieldPath, formField);
     },
 
@@ -55,16 +55,15 @@ export const SchemaSlice = createSlice({
     },
 
     formFieldValidationAction: (state, action) => {
-      debugger
-      const { nameUpdated, errorMessage, touched } = action.payload;
+      const { dataMappingName, errorMessage, touched } = action.payload;
 
-      _.set(state.productFormValidation.touched, `${nameUpdated}`, touched ? touched : false);
+      _.set(state.productFormValidation.touched, `${dataMappingName}`, touched ? touched : false);
 
       if (errorMessage) {
-        _.set(state.productFormValidation.errorMessage, `${nameUpdated}`, errorMessage);
+        _.set(state.productFormValidation.errorMessage, `${dataMappingName}`, errorMessage);
       }
       else {
-        _.set(state.productFormValidation.errorMessage, `${nameUpdated}`, "");
+        _.set(state.productFormValidation.errorMessage, `${dataMappingName}`, "");
       }
     },
 

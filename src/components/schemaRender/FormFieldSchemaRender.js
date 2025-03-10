@@ -55,7 +55,7 @@ const FormFieldSchemaRender = (props) => {
     } = props
     let newFormItem = {
         ...formItem,
-        nameUpdated: _.get(formItem, "nameUpdated", formItem.name)
+        dataMappingName: _.get(formItem, "dataMappingName", formItem.name)
     }
 
     const dispatch = useDispatch()
@@ -70,7 +70,7 @@ const FormFieldSchemaRender = (props) => {
     })
 
 
-    const dependsOnValue = _.get(formValueObject, newFormItem.dependsOnNameUpdated, "")
+    const dependsOnValue = _.get(formValueObject, newFormItem.dependsOnDataMappingName, "")
     useEffect(() => {
         if (newFormItem.updateData && dependsOnValue) {
             handleFormMetaDataItemChange(newFormItem, dependsOnValue)
@@ -117,15 +117,15 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputDateTimePicker
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     tooltipText={t(newFormItem.tooltipText)}
-                    name={newFormItem.nameUpdated}
-                    value={formValueObject[newFormItem.nameUpdated]}
+                    name={newFormItem.dataMappingName}
+                    value={formValueObject[newFormItem.dataMappingName]}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -139,18 +139,18 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputSwitchWithLable
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
+                    name={newFormItem.dataMappingName}
                     readOnly={newFormItem.readOnly}
-                    value={formValueObject[newFormItem.nameUpdated]}
+                    value={formValueObject[newFormItem.dataMappingName]}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -164,22 +164,22 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputSelectDropdown
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     loading={newFormItem.loading}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
+                    name={newFormItem.dataMappingName}
                     readOnly={newFormItem.readOnly}
-                    value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                    value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                     options={newFormItem.options}
                     isMultilingual={newFormItem.isMultilingual}
                     formLanguage={selectedFormLanguage}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -194,19 +194,19 @@ const FormFieldSchemaRender = (props) => {
             return (
                 <>
                     <InputTextareaWithLabel
-                        key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                        key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                         section={newFormItem.section}
                         label={t(newFormItem.label)}
                         placeholder={t(newFormItem.placeholder)}
                         tooltipText={t(newFormItem.tooltipText)}
                         type={newFormItem.type}
-                        name={`${newFormItem.nameUpdated}.${selectedFormLanguage}`}
+                        name={`${newFormItem.dataMappingName}.${selectedFormLanguage}`}
                         readOnly={newFormItem.readOnly}
-                        value={_.get(formValueObject, `${newFormItem.nameUpdated}[${selectedFormLanguage}]`, "")}
+                        value={_.get(formValueObject, `${newFormItem.dataMappingName}[${selectedFormLanguage}]`, "")}
                         aiEnable={newFormItem.aiEnable}
                         isAllTouched={formValidationObject.isAllTouched}
-                        touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                        touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                         onBlur={onBlur}
                         onChange={onChange}
                         className={className}
@@ -219,18 +219,18 @@ const FormFieldSchemaRender = (props) => {
             return (
                 <>
                     <InputTextareaWithLabel
-                        key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                        key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                         section={newFormItem.section}
                         label={t(newFormItem.label)}
                         placeholder={t(newFormItem.placeholder)}
                         tooltipText={t(newFormItem.tooltipText)}
                         type={newFormItem.type}
-                        name={newFormItem.nameUpdated}
+                        name={newFormItem.dataMappingName}
                         readOnly={newFormItem.readOnly}
-                        value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                        value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                         isAllTouched={formValidationObject.isAllTouched}
-                        touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                        touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                         onBlur={onBlur}
                         onChange={onChange}
                         className={className}
@@ -246,19 +246,19 @@ const FormFieldSchemaRender = (props) => {
             return (
                 <>
                     <InputTextWithLabel
-                        key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                        key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                         section={newFormItem.section}
                         label={t(newFormItem.label)}
                         placeholder={t(newFormItem.placeholder)}
                         tooltipText={t(newFormItem.tooltipText)}
                         type={newFormItem.type}
-                        name={`${newFormItem.nameUpdated}.${selectedFormLanguage}`}
+                        name={`${newFormItem.dataMappingName}.${selectedFormLanguage}`}
                         readOnly={newFormItem.readOnly}
-                        value={_.get(formValueObject, `${newFormItem.nameUpdated}[${selectedFormLanguage}]`, "")}
+                        value={_.get(formValueObject, `${newFormItem.dataMappingName}[${selectedFormLanguage}]`, "")}
                         aiEnable={newFormItem.aiEnable}
                         isAllTouched={formValidationObject.isAllTouched}
-                        touched={formValidationObject.touched[newFormItem.nameUpdated] || touched}
-                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, validationObj)}
+                        touched={formValidationObject.touched[newFormItem.dataMappingName] || touched}
+                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, validationObj)}
                         onBlur={onBlur}
                         onChange={onChange}
                         className={className}
@@ -271,18 +271,18 @@ const FormFieldSchemaRender = (props) => {
             return (
                 <>
                     <InputTextWithLabel
-                        key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                        key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                         section={newFormItem.section}
                         label={t(newFormItem.label)}
                         placeholder={t(newFormItem.placeholder)}
                         tooltipText={t(newFormItem.tooltipText)}
                         type={newFormItem.type}
-                        name={newFormItem.nameUpdated}
+                        name={newFormItem.dataMappingName}
                         readOnly={newFormItem.readOnly}
-                        value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                        value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                         isAllTouched={formValidationObject.isAllTouched }
-                        touched={formValidationObject.touched[newFormItem.nameUpdated] || touched}
-                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem?.nameUpdated}`, validationObj)}
+                        touched={formValidationObject.touched[newFormItem.dataMappingName] || touched}
+                        errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem?.dataMappingName}`, validationObj)}
                         onBlur={onBlur}
                         onChange={onChange}
                         className={className}
@@ -298,18 +298,18 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputColorWithLabel
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
+                    name={newFormItem.dataMappingName}
                     readOnly={newFormItem.readOnly || formReadOnly}
-                    value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                    value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -324,18 +324,18 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputTextMultiAddWithLabel
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
+                    name={newFormItem.dataMappingName}
                     readOnly={newFormItem.readOnly || formReadOnly}
-                    value={_.get(formValueObject, newFormItem.nameUpdated, [])}
+                    value={_.get(formValueObject, newFormItem.dataMappingName, [])}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -350,18 +350,18 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //          <ShowAdditionalBusinessIdentifiers 
-    //           key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //           key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //           section={newFormItem.section}
     //           label={t(newFormItem.label)}
     //           placeholder={t(newFormItem.placeholder)}
     //           tooltipText={t(newFormItem.tooltipText)}
     //           type={newFormItem.type}
-    //           name={newFormItem.nameUpdated}
-    //           value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //           name={newFormItem.dataMappingName}
+    //           value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //           modalTitle={newFormItem.modalTitle}
     //           readOnly={newFormItem.readOnly || formReadOnly}
     //           isAllTouched={formValidationObject.isAllTouched}
-    //           touched={formValidationObject.touched[newFormItem.nameUpdated]}
+    //           touched={formValidationObject.touched[newFormItem.dataMappingName]}
     //           onBlur={onBlur}
     //           onChange={onChange}
     //           className={className}
@@ -376,19 +376,19 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputEmailMultiAddWithModal
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
-                    value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                    name={newFormItem.dataMappingName}
+                    value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                     modalTitle={newFormItem.modalTitle}
                     readOnly={newFormItem.readOnly || formReadOnly}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -402,22 +402,22 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputUrlMultiAddWithModal
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
-                    value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                    name={newFormItem.dataMappingName}
+                    value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                     options={newFormItem.options}
                     modalTitle={newFormItem.modalTitle}
                     isMultilingual={newFormItem.isMultilingual}
                     formLanguage={selectedFormLanguage}
                     readOnly={newFormItem.readOnly || formReadOnly}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -433,22 +433,22 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputCertificateMultiSelectWithModal
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
-                    value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                    name={newFormItem.dataMappingName}
+                    value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                     options={newFormItem.options}
                     modalTitle={newFormItem.modalTitle}
                     isMultilingual={newFormItem.isMultilingual}
                     formLanguage={selectedFormLanguage}
                     readOnly={newFormItem.readOnly || formReadOnly}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -464,22 +464,22 @@ const FormFieldSchemaRender = (props) => {
         return (
             <>
                 <InputMultiSelectWithModal
-                    key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+                    key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
                     section={newFormItem.section}
                     label={t(newFormItem.label)}
                     placeholder={t(newFormItem.placeholder)}
                     tooltipText={t(newFormItem.tooltipText)}
                     type={newFormItem.type}
-                    name={newFormItem.nameUpdated}
-                    value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+                    name={newFormItem.dataMappingName}
+                    value={_.get(formValueObject, newFormItem.dataMappingName, "")}
                     options={newFormItem.options}
                     modalTitle={newFormItem.modalTitle}
                     isMultilingual={newFormItem.isMultilingual}
                     formLanguage={selectedFormLanguage}
                     readOnly={newFormItem.readOnly}
                     isAllTouched={formValidationObject.isAllTouched}
-                    touched={formValidationObject.touched[newFormItem.nameUpdated]}
-                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+                    touched={formValidationObject.touched[newFormItem.dataMappingName]}
+                    errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
                     onBlur={onBlur}
                     onChange={onChange}
                     className={className}
@@ -496,19 +496,19 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <MediaImage
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 bottomLabel={t(newFormItem.bottomLabel)}
     //                 placeholder={t(newFormItem.placeholder)}
     //                 tooltipText={t(newFormItem.tooltipText)}
     //                 type={newFormItem.type}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //                 readOnly={newFormItem.readOnly || formReadOnly}
-    //                 value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //                 value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
     //                 className={className}
@@ -523,18 +523,18 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <MediaImageOther
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 placeholder={t(newFormItem.placeholder)}
     //                 tooltipText={t(newFormItem.tooltipText)}
     //                 type={newFormItem.type}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //                 readOnly={newFormItem.readOnly || formReadOnly}
-    //                 value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //                 value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
     //                 className={className}
@@ -549,18 +549,18 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <MediaVideo
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 placeholder={t(newFormItem.placeholder)}
     //                 tooltipText={t(newFormItem.tooltipText)}
     //                 type={newFormItem.type}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //                 readOnly={newFormItem.readOnly || formReadOnly}
-    //                 value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //                 value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
     //                 className={className}
@@ -574,18 +574,18 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <MediaVideoUrl
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 placeholder={t(newFormItem.placeholder)}
     //                 tooltipText={t(newFormItem.tooltipText)}
     //                 type={newFormItem.type}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //                 readOnly={newFormItem.readOnly || formReadOnly}
-    //                 value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //                 value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
     //                 className={className}
@@ -601,18 +601,18 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <Media3dmodelGlb
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 placeholder={t(newFormItem.placeholder)}
     //                 tooltipText={t(newFormItem.tooltipText)}
     //                 type={newFormItem.type}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //                 readOnly={newFormItem.readOnly || formReadOnly}
-    //                 value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //                 value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
     //                 className={className}
@@ -626,18 +626,18 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <MediaDocumentPdf
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 placeholder={t(newFormItem.placeholder)}
     //                 tooltipText={t(newFormItem.tooltipText)}
     //                 type={newFormItem.type}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //                 readOnly={newFormItem.readOnly || formReadOnly}
-    //                 value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //                 value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
     //                 className={className}
@@ -652,18 +652,18 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <MediaOtherFile
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 placeholder={t(newFormItem.placeholder)}
     //                 tooltipText={t(newFormItem.tooltipText)}
     //                 type={newFormItem.type}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //                 readOnly={newFormItem.readOnly || formReadOnly}
-    //                 value={_.get(formValueObject, newFormItem.nameUpdated, "")}
+    //                 value={_.get(formValueObject, newFormItem.dataMappingName, "")}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
     //                 className={className}
@@ -680,7 +680,7 @@ const FormFieldSchemaRender = (props) => {
     // if (newFormItem.type === "emailConsent") {
     //     return (
     //         <EmailConsentComponent
-    //             key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //             key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //             section={newFormItem.section}
     //         />
     //     )
@@ -691,7 +691,7 @@ const FormFieldSchemaRender = (props) => {
     // if (newFormItem.type === "ecommerce") {
     //     return (
     //         <EcommerceComponent
-    //             key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //             key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //         />
     //     )
     // }
@@ -701,17 +701,17 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <ManufactureTab
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 componentSchema={newFormItem.componentSchema}
     //                 manufacturesSchema={newFormItem.manufacturesSchema}
     //                 // tooltipText={t(newFormItem.tooltipText)}
-    //                 // name={newFormItem.nameUpdated}
-    //                 // value={formValueObject[newFormItem.nameUpdated]}
+    //                 // name={newFormItem.dataMappingName}
+    //                 // value={formValueObject[newFormItem.dataMappingName]}
     //                 // isAllTouched={formValidationObject.isAllTouched}
-    //                 // touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 // errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 // touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 // errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 // readOnly={formValueObject[newFormItem.readOnly] || formReadOnly}
     //                 // onBlur={onBlur}
     //                 // onChange={onChange}
@@ -726,15 +726,15 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <ExternalSources
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 tooltipText={t(newFormItem.tooltipText)}
-    //                 name={newFormItem.nameUpdated}
-    //                 value={formValueObject[newFormItem.nameUpdated]}
+    //                 name={newFormItem.dataMappingName}
+    //                 value={formValueObject[newFormItem.dataMappingName]}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 readOnly={formValueObject[newFormItem.readOnly] || formReadOnly}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
@@ -749,15 +749,15 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <BusinessIdentifiers
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 tooltipText={t(newFormItem.tooltipText)}
-    //                 name={newFormItem.nameUpdated}
-    //                 value={formValueObject[newFormItem.nameUpdated]}
+    //                 name={newFormItem.dataMappingName}
+    //                 value={formValueObject[newFormItem.dataMappingName]}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 readOnly={formValueObject[newFormItem.readOnly] || formReadOnly}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
@@ -772,15 +772,15 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <Restrictions
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 tooltipText={t(newFormItem.tooltipText)}
-    //                 name={newFormItem.nameUpdated}
-    //                 value={formValueObject[newFormItem.nameUpdated]}
+    //                 name={newFormItem.dataMappingName}
+    //                 value={formValueObject[newFormItem.dataMappingName]}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 readOnly={formValueObject[newFormItem.readOnly] || formReadOnly}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
@@ -797,15 +797,15 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <DoormatModal
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //                 tooltipText={t(newFormItem.tooltipText)}
-    //                 name={newFormItem.nameUpdated}
-    //                 value={formValueObject[newFormItem.nameUpdated]}
+    //                 name={newFormItem.dataMappingName}
+    //                 value={formValueObject[newFormItem.dataMappingName]}
     //                 isAllTouched={formValidationObject.isAllTouched}
-    //                 touched={formValidationObject.touched[newFormItem.nameUpdated]}
-    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.nameUpdated}`, "")}
+    //                 touched={formValidationObject.touched[newFormItem.dataMappingName]}
+    //                 errorMessage={_.get(formValidationObject, `errorMessage.${newFormItem.dataMappingName}`, "")}
     //                 readOnly={formValueObject[newFormItem.readOnly] || formReadOnly}
     //                 onBlur={onBlur}
     //                 onChange={onChange}
@@ -822,7 +822,7 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <NutritionalTab
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
     //                 label={t(newFormItem.label)}
     //             />
@@ -835,9 +835,9 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <UpidsProduct
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //             />
 
     //         </>
@@ -848,9 +848,9 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <Feedback
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //             />
 
     //         </>
@@ -862,9 +862,9 @@ const FormFieldSchemaRender = (props) => {
     //     return (
     //         <>
     //             <Versioning
-    //                 key={`${newFormItem.nameUpdated}_${newFormItem.type}`}
+    //                 key={`${newFormItem.dataMappingName}_${newFormItem.type}`}
     //                 section={newFormItem.section}
-    //                 name={newFormItem.nameUpdated}
+    //                 name={newFormItem.dataMappingName}
     //             />
 
     //         </>
