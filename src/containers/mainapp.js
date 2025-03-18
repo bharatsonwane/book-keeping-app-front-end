@@ -5,7 +5,6 @@ import Home from "../pages/home";
 import Services from "../pages/services/index";
 import Team from "../pages/team";
 import Work from "../pages/work";
-import SchemaRender from "../pages/schemaRender";
 import BookKeeping from "src/pages/bookKeeping";
 
 const MainApp = (props) => {
@@ -37,7 +36,6 @@ const MainApp = (props) => {
           <Route path={`services/*`} element={<Services />}></Route>
           <Route path={`team/*`} element={<Team />} />
           <Route path={`work/*`} element={<Work />} />
-          <Route path={`schema/*`} element={<SchemaRender />} />
           <Route path={`book-keeping/*`} element={<BookKeeping />} />
         </Routes>
       </div>
