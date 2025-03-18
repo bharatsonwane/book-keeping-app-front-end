@@ -201,8 +201,8 @@ const FormFieldSchemaRender = (props) => {
                         tooltipText={t(newFormItem.tooltipText)}
                         type={newFormItem.type}
                         name={`${newFormItem.dataMappingName}.${selectedFormLanguage}`}
-                        readOnly={newFormItem.readOnly}
                         value={_.get(formValueObject, `${newFormItem.dataMappingName}[${selectedFormLanguage}]`, "")}
+                        readOnly={newFormItem.readOnly}
                         aiEnable={newFormItem.aiEnable}
                         isAllTouched={formValidationObject.isAllTouched}
                         touched={formValidationObject.touched[newFormItem.dataMappingName]}

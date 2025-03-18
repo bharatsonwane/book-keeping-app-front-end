@@ -1,12 +1,11 @@
 import React from "react";
 import bookKeepingSchema from "src/helper/productSchema/bookKeepingSchema";
-import SchemaFormFieldRenderer from "./components/SchemaTabRenderer";
+import SchemaMainRenderer from "./components/SchemaMainRenderer";
 
 function BookKeeping() {
-
   return (
     <div className="main-page-container">
-      <SchemaFormFieldRenderer schema={bookKeepingSchema} />
+      <SchemaMainRenderer schema={bookKeepingSchema} />
     </div>
   );
 }

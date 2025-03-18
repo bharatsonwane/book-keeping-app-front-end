@@ -11,7 +11,7 @@ import {
   formFieldDataUpdateAction,
   formFieldValidationAction,
 } from "src/slice/bookKeeping";
-import { getValidationErrorForFieldForZod } from "src/helper/validationZodHelper";
+import { getValidationErrorForFieldWithZod } from "src/helper/validationZodHelper";
 
 function SchemaFormFieldRender(props) {
   const {
@@ -189,7 +189,7 @@ const RenderMultilingualField = ({
     return (
       <div
         key={`multilingualTabEnd_${node.dataMappingName}`}
-        style={{ marginBottom: "10px" }}
+        style={{ marginBottom: "16px" }}
       ></div>
     );
   }
@@ -256,7 +256,7 @@ function SchemaFieldRenderer({
     console.log("onblur", e.target.value, item);
     // /** field validation */
     const { dataMappingName, errorMessage } =
-      await getValidationErrorForFieldForZod(item, e.target.value);
+      await getValidationErrorForFieldWithZod(item, e.target.value);
     dispatch(
       formFieldValidationAction({
         dataMappingName: dataMappingName,

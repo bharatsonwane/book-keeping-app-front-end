@@ -12,6 +12,19 @@ const bookKeepingSchema = {
           childrenType: "field",
           children: [
             {
+              label: "Transaction Name",
+              type: "text",
+              dataMappingName: "transactions.name",
+              validationType: "string",
+              validations: [
+                { type: "min", params: [3, "Must be at least 3 characters"] },
+                { type: "max", params: [50, "Must be at most 50 characters"] },
+                { type: "trim" },
+              ],
+              readOnly: false,
+              isMultilingual: false,
+            },
+            {
               label: "Transaction ID",
               type: "text",
               dataMappingName: "transactions.id",
@@ -22,7 +35,7 @@ const bookKeepingSchema = {
                 { type: "trim" },
               ],
               readOnly: false,
-              isMultilingual: true,
+              isMultilingual: false,
             },
             {
               label: "Transaction Bank",
@@ -35,7 +48,7 @@ const bookKeepingSchema = {
                 { type: "trim" },
               ],
               readOnly: false,
-              isMultilingual: true,
+              isMultilingual: false,
             },
 
             {
@@ -63,6 +76,13 @@ const bookKeepingSchema = {
               dataMappingName: "transactions.recurring",
               readOnly: false,
               isMultilingual: false,
+            },
+            {
+              label: "Transaction Description",
+              type: "textarea",
+              dataMappingName: "transactions.description",
+              readOnly: false,
+              isMultilingual: true,
             },
           ],
         },

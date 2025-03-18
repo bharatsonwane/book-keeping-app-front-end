@@ -2,9 +2,9 @@ import _ from "lodash";
 import { z } from "zod";
 
 // Function to generate Zod schema from JSON definition
-const createZodSchema = (schemaJson) => {
-  if (!Array.isArray(schemaJson)) {
-    throw new Error("schemaJson must be an array");
+const createZodSchema = (flatFieldObjectList) => {
+  if (!Array.isArray(flatFieldObjectList)) {
+    throw new Error("flatFieldObjectList must be an array");
   }
 
   const invalidValidationFieldObject = {};
@@ -38,24 +38,24 @@ const createZodSchema = (schemaJson) => {
     }
   };
 
-  const allSchemaEntries = schemaJson.map(convertToZodType);
+  const allSchemaEntries = flatFieldObjectList.map(convertToZodType);
   const validSchemaEntries = allSchemaEntries.filter(Boolean);
   const schemaObject = z.object(Object.fromEntries(validSchemaEntries));
   return { schemaObject, invalidValidationFieldObject };
 };
 
 // Function to validate data and return errors
-const validateDataWithZod = (schemaJson, dataObject) => {
+export const validateDataWithZod = (flatFieldObjectList, dataObject) => {
   try {
     const formDataObject = {};
 
-    schemaJson.forEach((field) => {
+    flatFieldObjectList.forEach((field) => {
       const dataMappingName = field.dataMappingName || field.name;
       const value = _.get(dataObject, dataMappingName);
       formDataObject[dataMappingName] = value;
     });
 
-    const { schemaObject } = createZodSchema(schemaJson);
+    const { schemaObject } = createZodSchema(flatFieldObjectList);
 
     schemaObject.parse(formDataObject);
     return {}; // No errors, return empty object
@@ -68,7 +68,7 @@ const validateDataWithZod = (schemaJson, dataObject) => {
   }
 };
 
-export const getValidationErrorForFieldForZod = async (item, value) => {
+export const getValidationErrorForFieldWithZod = async (item, value) => {
   const dataMappingName = item.dataMappingName || item.name;
   const errorMessageObject = await validateDataWithZod([item], {
     [dataMappingName]: value,
@@ -80,35 +80,45 @@ export const getValidationErrorForFieldForZod = async (item, value) => {
   };
 };
 
-// Example schema definition
-// const exampleSchemaJSON = [
-//   {
-//     validationType: "string",
-//     name: "firstName",
-//     validations: [
-//       { type: "min", params: [2, "Must be at least 2 characters"] },
-//       { type: "max", params: [50, "Must be at most 50 characters"] },
-//       { type: "regex", params: [/^[a-zA-Z]+$/, "Only alphabets allowed"] },
-//       { type: "trim" },
-//     ],
-//     type: "text",
-//   },
-//   {
-//     validationType: "string",
-//     name: "lastName",
-//     validations: [
-//       { type: "min", params: [3, "Must be at least 3 characters"] },
-//       { type: "max", params: [50, "Must be at most 50 characters"] },
-//       { type: "regex", params: [/^[a-zA-Z]+$/, "Only alphabets allowed"] },
-//       { type: "trim" },
-//     ],
-//     type: "text",
-//   },
-// ];
+/**
+ * Function to flatten the bookKeepingSchema and return a list of field information
+ * @param {Object} schema - The bookKeepingSchema object
+ * @returns {Array} - A flat list of field information
+ */
+export const getFieldObjectListFromSchema = (schema) => {
+  const flatList = [];
 
-// // Example data input
-// const exampleData = { firstName: "J", lastName: "9" };
+  const traverseSchema = (node) => {
+    if (node.children && Array.isArray(node.children)) {
+      node.children.forEach((child) => traverseSchema(child));
+    } else {
+      flatList.push({
+        ...node,
+        label: node.label,
+        type: node.type,
+        dataMappingName: node.dataMappingName,
+        validationType: node.validationType,
+        validations: node.validations,
+        readOnly: node.readOnly,
+        isMultilingual: node.isMultilingual,
+      });
+    }
+  };
 
-// // Validate data and get errors
-// const errors = validateDataWithZod(exampleSchemaJSON, exampleData);
-// console.log("Validation Errors:", errors);
+  traverseSchema(schema);
+  return flatList;
+};
+
+export const getValidationErrorForSchemaWithZod = async (
+  schema,
+  dataObject
+) => {
+
+  const fieldList = getFieldObjectListFromSchema(schema);
+
+  const errorMessageObject = await validateDataWithZod(fieldList, dataObject);
+
+  console.log("errorMessageObject", errorMessageObject);
+
+return errorMessageObject;
+};
