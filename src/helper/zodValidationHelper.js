@@ -118,7 +118,5 @@ export const getValidationErrorForSchemaWithZod = async (
 
   const errorMessageObject = await validateDataWithZod(fieldList, dataObject);
 
-  console.log("errorMessageObject", errorMessageObject);
-
 return errorMessageObject;
 };

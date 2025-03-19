@@ -1,5 +1,5 @@
 import React from "react";
-import bookKeepingSchema from "src/helper/productSchema/bookKeepingSchema";
+import bookKeepingSchema from "src/helper/schema/bookKeepingSchema";
 import SchemaMainRenderer from "./components/SchemaMainRenderer";
 
 function BookKeeping() {

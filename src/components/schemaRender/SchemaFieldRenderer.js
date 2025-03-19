@@ -11,7 +11,7 @@ import {
   formFieldDataUpdateAction,
   formFieldValidationAction,
 } from "src/slice/bookKeeping";
-import { getValidationErrorForFieldWithZod } from "src/helper/validationZodHelper";
+import { getValidationErrorForFieldWithZod } from "src/helper/zodValidationHelper";
 
 function SchemaFormFieldRender(props) {
   const {
@@ -212,7 +212,6 @@ function SchemaFieldRenderer({
     (state) => state.bookKeeping.formValidation
   );
 
-
   const name = (() => {
     if (node.isMultilingual) {
       return `${node.dataMappingName}.${languageData.selectedLanguage}`;
@@ -234,14 +233,13 @@ function SchemaFieldRenderer({
   const isAllTouched = formValidationObject?.isAllTouched;
 
   const errorMessage = node.dataMappingName
-    ? _.get(formValidationObject, `errorMessage.${node.dataMappingName}`, "")
+    ? _.get(formValidationObject, `errorMessage.${node.dataMappingName}`, "") ||
+      formValidationObject?.errorMessage?.[node.dataMappingName]
     : "";
 
   const isTouched = node.dataMappingName
     ? _.get(formValidationObject, `touched[${node.dataMappingName}]`, false)
     : false;
-
-
 
   const handleInputChange = (e) => {
     dispatch(
@@ -253,7 +251,6 @@ function SchemaFieldRenderer({
   };
 
   const handleBlurChange = async (e, item) => {
-    console.log("onblur", e.target.value, item);
     // /** field validation */
     const { dataMappingName, errorMessage } =
       await getValidationErrorForFieldWithZod(item, e.target.value);
@@ -265,7 +262,6 @@ function SchemaFieldRenderer({
       })
     );
   };
-
 
   return (
     <Fragment>

@@ -3,15 +3,18 @@ import {
   getInitialTabName,
   getTabDataAndParentTabNameByName,
 } from "src/helper/schemaHelper";
-import SchemaTabRenderer from "./SchemaTabRenderer";
-import SchemaFieldRenderer from "./SchemaFieldRenderer";
-import { getValidationErrorForSchemaWithZod } from "src/helper/validationZodHelper";
-import { useSelector } from "react-redux";
+import SchemaTabRenderer from "../../../components/schemaRender/SchemaTabRenderer";
+import SchemaFieldRenderer from "../../../components/schemaRender/SchemaFieldRenderer";
+import { getValidationErrorForSchemaWithZod } from "src/helper/zodValidationHelper";
+import { useSelector, useDispatch } from "react-redux";
+import { validateAllFormFieldAction } from "src/thunks/bookKeeping";
 
 function SchemaMainRenderer({ schema }) {
-    const formDataObject = useSelector(
-      (state) => state.bookKeeping.formDataObject
-    );
+  const dispatch = useDispatch();
+
+  const formDataObject = useSelector(
+    (state) => state.bookKeeping.formDataObject
+  );
 
   const [selectedTabName, setSelectedTabName] = useState("");
 
@@ -45,8 +48,17 @@ function SchemaMainRenderer({ schema }) {
   };
 
   const handleSubmit = async () => {
-    const validation = await getValidationErrorForSchemaWithZod(schema, formDataObject);
-    console.log("validation", validation)
+    try {
+      const response = await dispatch(
+        validateAllFormFieldAction({
+          formDataObject,
+          schema,
+        })
+      ).unwrap();
+      console.log("response", response);
+    } catch (error) {
+      console.error("form validation error", error);
+    }
   };
 
   return (

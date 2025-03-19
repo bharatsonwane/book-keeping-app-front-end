@@ -1,5 +1,6 @@
 import _ from "lodash";
 import { createSlice } from "@reduxjs/toolkit";
+import { validateAllFormFieldAction } from "src/thunks/bookKeeping";
 
 const initState = {
   loading: false,
@@ -22,7 +23,6 @@ export const bookKeepingSlice = createSlice({
     },
 
     formFieldValidationAction: (state, action) => {
-      debugger;
       const { dataMappingName, errorMessage, touched } = action.payload;
 
       _.set(
@@ -42,8 +42,14 @@ export const bookKeepingSlice = createSlice({
       }
     },
   },
-  extraReducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(validateAllFormFieldAction.fulfilled, (state, action) => {
+      state.formValidation.isAllTouched = true;
+      state.formValidation.errorMessage = action.payload;
+    });
+  },
 });
 
-export const { formFieldDataUpdateAction, formFieldValidationAction } = bookKeepingSlice.actions;
+export const { formFieldDataUpdateAction, formFieldValidationAction } =
+  bookKeepingSlice.actions;
 export default bookKeepingSlice;

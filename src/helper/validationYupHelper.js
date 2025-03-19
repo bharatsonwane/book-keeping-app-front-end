@@ -107,12 +107,10 @@ export function createYupSchema(schema, config) {
  * @returns {dataMappingName, errorMessage}
  */
 export const getValidationErrorForFieldForYup = async (fieldObject, fieldValue) => {
-  debugger
   const newFieldValue = {}
   const dataMappingName = fieldObject.dataMappingName ? fieldObject.dataMappingName : fieldObject.name;
   _.set(newFieldValue, dataMappingName, fieldValue)
   const { errorMessageObject } = await getValidationErrorObjectForYup([fieldObject], newFieldValue)
-  console.log("errorMessageObject", errorMessageObject)
   return { dataMappingName: dataMappingName, errorMessage: _.get(errorMessageObject, dataMappingName, "") }
 }
   
