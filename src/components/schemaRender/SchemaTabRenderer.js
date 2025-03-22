@@ -2,9 +2,9 @@ import React from "react";
 
 function SchemaTabRenderer({
   schema,
-  selectedTabName,
-  parentTabName,
-  setSelectedTabName = () => {},
+  selectedTabLabel,
+  parentTabLabel,
+  setSelectedTabLabel = () => {},
 }) {
   return (
     <div id="navbarProductProfile" className="product-profile-navbar">
@@ -22,29 +22,29 @@ function SchemaTabRenderer({
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                       data-tabselect={
-                        selectedTabName === tabNode.tabName ||
-                        parentTabName === tabNode.tabName
+                        selectedTabLabel === tabNode.label ||
+                        parentTabLabel === tabNode.label
                       }
                     >
-                      {tabNode.tabName}
+                      {tabNode.label}
                     </button>
                     <ul
                       className="dropdown-menu"
                       aria-labelledby={`dropdownMenuButton_${index}`}
                     >
                       {tabNode.children.map((childTabNode, childIndex) => (
-                        <li key={`tab_${childTabNode.tabName}${childIndex}`}>
+                        <li key={`tab_${childTabNode.label}${childIndex}`}>
                           <button
                             className="dropdown-item"
                             type="button"
                             onClick={() =>
-                              setSelectedTabName(childTabNode.tabName)
+                              setSelectedTabLabel(childTabNode.label)
                             }
                             data-tabselect={
-                              selectedTabName === childTabNode.tabName
+                              selectedTabLabel === childTabNode.label
                             }
                           >
-                            {childTabNode.tabName}
+                            {childTabNode.label}
                           </button>
                         </li>
                       ))}
@@ -53,13 +53,13 @@ function SchemaTabRenderer({
                 </>
               ) : (
                 <a
-                  key={`tab_${tabNode.tabName}${index}`}
+                  key={`tab_${tabNode.label}${index}`}
                   className="nav-link"
                   role="button"
-                  data-tabselect={selectedTabName === tabNode.tabName}
-                  onClick={() => setSelectedTabName(tabNode.tabName)}
+                  data-tabselect={selectedTabLabel === tabNode.label}
+                  onClick={() => setSelectedTabLabel(tabNode.label)}
                 >
-                  {tabNode.tabName}
+                  {tabNode.label}
                 </a>
               )}
             </li>

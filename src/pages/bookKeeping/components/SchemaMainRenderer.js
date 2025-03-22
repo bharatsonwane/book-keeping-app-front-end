@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
-  getInitialTabName,
-  getTabDataAndParentTabNameByName,
+  getInitialTabLabel,
+  getTabDataAndParentTabLabelByName,
 } from "src/helper/schemaHelper";
 import SchemaTabRenderer from "../../../components/schemaRender/SchemaTabRenderer";
 import SchemaFieldRenderer from "../../../components/schemaRender/SchemaFieldRenderer";
-import { getValidationErrorForSchemaWithZod } from "src/helper/zodValidationHelper";
 import { useSelector, useDispatch } from "react-redux";
 import { validateAllFormFieldAction } from "src/thunks/bookKeeping";
 
@@ -16,7 +15,7 @@ function SchemaMainRenderer({ schema }) {
     (state) => state.bookKeeping.formDataObject
   );
 
-  const [selectedTabName, setSelectedTabName] = useState("");
+  const [selectedTabLabel, setSelectedTabLabel] = useState("");
 
   const [languageData, setLanguageData] = useState({
     selectedLanguage: "en",
@@ -26,21 +25,20 @@ function SchemaMainRenderer({ schema }) {
     ],
   });
 
-  const { tabData, parentTabName } = useMemo(() => {
-    if (selectedTabName) {
-      const { tabData, parentTabName } = getTabDataAndParentTabNameByName(
+  const { tabData, parentTabLabel } = useMemo(() => {
+    if (selectedTabLabel) {
+      const { tabData, parentTabLabel } = getTabDataAndParentTabLabelByName(
         schema,
-        selectedTabName
+        selectedTabLabel
       );
-
-      return { tabData, parentTabName };
+      return { tabData, parentTabLabel };
     }
-    return { tabData: null, parentTabName: null };
-  }, [selectedTabName]);
+    return { tabData: null, parentTabLabel: null };
+  }, [selectedTabLabel]);
 
   useEffect(() => {
-    const tabName = getInitialTabName(schema);
-    setSelectedTabName(tabName);
+    const tabLabel = getInitialTabLabel(schema);
+    setSelectedTabLabel(tabLabel);
   }, [schema?.schemaName, schema?.version]);
 
   const handleChangeLanguage = (selectedLanguage) => {
@@ -70,9 +68,9 @@ function SchemaMainRenderer({ schema }) {
 
       <SchemaTabRenderer
         schema={schema}
-        selectedTabName={selectedTabName}
-        parentTabName={parentTabName}
-        setSelectedTabName={setSelectedTabName}
+        selectedTabLabel={selectedTabLabel}
+        parentTabLabel={parentTabLabel}
+        setSelectedTabLabel={setSelectedTabLabel}
       />
 
       <div className="product-profile--content" style={{ minHeight: 300 }}>

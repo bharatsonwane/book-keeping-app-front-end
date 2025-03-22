@@ -1,47 +1,47 @@
 /**
- * Function to find a tab object by tabName
+ * Function to find a tab object by tabLabel
  * @param {Object} schema - The schema object to search within
- * @param {String} tabName - The name of the tab to find
- * @param {String|null} parentTabName - The name of the parent tab (used internally for recursion)
- * @returns {Object} - An object containing the tabData and parentTabName if found, otherwise null
+ * @param {String} tabLabel - The name of the tab to find
+ * @param {String|null} parentTabLabel - The name of the parent tab (used internally for recursion)
+ * @returns {Object} - An object containing the tabData and parentTabLabel if found, otherwise null
  */
-export const getTabDataAndParentTabNameByName = (
+export const getTabDataAndParentTabLabelByName = (
   schema,
-  tabName,
-  parentTabName = null
+  tabLabel,
+  parentTabLabel = null
 ) => {
-  // Check if the current schema's tabName matches the provided tabName
-  if (schema.tabName === tabName) {
-    return { tabData: schema, parentTabName };
+  // Check if the current schema's tabLabel matches the provided tabLabel
+  if (schema.label === tabLabel) {
+    return { tabData: schema, parentTabLabel };
   }
 
   // If the schema has children, iterate through them
   if (schema.children && Array.isArray(schema.children)) {
     for (const child of schema.children) {
       // Recursively call the function for each child
-      const result = getTabDataAndParentTabNameByName(
+      const result = getTabDataAndParentTabLabelByName(
         child,
-        tabName,
-        schema.tabName
+        tabLabel,
+        schema.label
       );
       if (result?.tabData) {
-        // If a match is found, return the tabData and the parentTabName
+        // If a match is found, return the tabData and the parentTabLabel
         return result;
       }
     }
   }
 
-  // If no match is found, return null for both tabData and parentTabName
-  return { tabData: null, parentTabName: null };
+  // If no match is found, return null for both tabData and parentTabLabel
+  return { tabData: null, parentTabLabel: null };
 };
 
-export const getInitialTabName = (schema) => {
-  if (schema.tabName && schema?.type !== "parentTab") {
-    return schema.tabName;
+export const getInitialTabLabel = (schema) => {
+  if (schema?.type == "tab") {
+    return schema.label;
   }
   if (schema.children && Array.isArray(schema.children)) {
     for (const child of schema.children) {
-      const result = getInitialTabName(child);
+      const result = getInitialTabLabel(child);
       if (result) {
         return result;
       }

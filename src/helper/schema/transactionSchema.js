@@ -1,15 +1,15 @@
 const transactionSchema = {
-  schemaName: "transactionSchema",
+  name: "transactionSchema",
   label: "Transaction Schema",
-  version: "1.0",
   type: "schema",
+  version: "1.0",
   children: [
     {
-      tabName: "Transaction Details",
+      label: "Transaction Details",
       type: "parentTab",
       children: [
         {
-          tabName: "Basic Information",
+          label: "Basic Information",
           type: "tab",
           children: [
             {
@@ -88,7 +88,7 @@ const transactionSchema = {
           ],
         },
         {
-          tabName: "Payment Information",
+          label: "Payment Information",
           type: "tab",
           children: [
             {
@@ -137,7 +137,7 @@ const transactionSchema = {
       ],
     },
     {
-      tabName: "Invoice Details",
+      label: "Invoice Details",
       type: "tab",
       children: [
         {

@@ -21,7 +21,7 @@ const initState = {
     productFlattenSchema: [],
     productTabStructuredSchema: [],
     selectedTabInfo: {
-      tabName: "",
+      tabLabel: "",
       fieldList: [],
       sectionLoading: [
         // { name: "primary[0]", section: "Product profile Images" },
@@ -42,9 +42,9 @@ export const SchemaSlice = createSlice({
     },
 
     selectProductTabInfoAction: (state, action) => {
-      const { tabName, fieldList } = action.payload
+      const { tabLabel, fieldList } = action.payload
       state.selectedProductSchema.selectedTabInfo = {
-        tabName: tabName,
+        tabLabel: tabLabel,
         fieldList: fieldList,
         sectionLoading: [],
       }
