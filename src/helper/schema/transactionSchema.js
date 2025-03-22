@@ -1,15 +1,16 @@
-const bookKeepingSchema = {
-  schemaName: "BookkeepingSchema",
+const transactionSchema = {
+  schemaName: "transactionSchema",
+  label: "Transaction Schema",
   version: "1.0",
-  childrenType: "tab",
+  type: "schema",
   children: [
     {
       tabName: "Transaction Details",
-      childrenType: "childTab",
+      type: "parentTab",
       children: [
         {
           tabName: "Basic Information",
-          childrenType: "field",
+          type: "tab",
           children: [
             {
               label: "Transaction Name",
@@ -88,7 +89,7 @@ const bookKeepingSchema = {
         },
         {
           tabName: "Payment Information",
-          childrenType: "field",
+          type: "tab",
           children: [
             {
               label: "Account Name",
@@ -137,7 +138,7 @@ const bookKeepingSchema = {
     },
     {
       tabName: "Invoice Details",
-      childrenType: "field",
+      type: "tab",
       children: [
         {
           label: "Invoice Information",
@@ -226,4 +227,4 @@ const bookKeepingSchema = {
   ],
 };
 
-export default bookKeepingSchema;
+export default transactionSchema;

@@ -52,15 +52,8 @@ const Menu = [
     vissbleOnSmallScrren: true,
   },
   {
-    key: "routekey-schema",
-    label: "sidebar.schema",
-    path: "/app/schema",
-    icon: <i className="me-1 bi bi-people-fill"></i>,
-    vissbleOnSmallScrren: true,
-  },
-  {
     key: "routekey-book-keeping",
-    label: "sidebar.book-keeping",
+    label: "sidebar.schema",
     path: "/app/book-keeping",
     icon: <i className="me-1 bi bi-people-fill"></i>,
     vissbleOnSmallScrren: true,

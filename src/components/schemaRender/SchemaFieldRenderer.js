@@ -273,7 +273,7 @@ function SchemaFieldRenderer({
         handleChangeLanguage={handleChangeLanguage}
       />
 
-      {node.childrenType === "formField" || node.childrenType === "field" ? (
+      {node.type === "tab" ? (
         <Fragment>
           {node.children?.map((childNode, index, list) => (
             <SchemaFieldRenderer

@@ -12,7 +12,7 @@ function SchemaTabRenderer({
         {schema.children.map((tabNode, index) => {
           return (
             <li className="nav-item" key={index}>
-              {tabNode.childrenType === "childTab" ? (
+              {tabNode.type === "parentTab" ? (
                 <>
                   <div className="dropdown">
                     <button
