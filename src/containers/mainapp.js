@@ -36,7 +36,7 @@ const MainApp = (props) => {
           <Route path={`services/*`} element={<Services />}></Route>
           <Route path={`team/*`} element={<Team />} />
           <Route path={`work/*`} element={<Work />} />
-          <Route path={`book-keeping/*`} element={<BookKeeping />} />
+          <Route path={`bookkeeping/*`} element={<BookKeeping />} />
         </Routes>
       </div>
     </WithSideBar>

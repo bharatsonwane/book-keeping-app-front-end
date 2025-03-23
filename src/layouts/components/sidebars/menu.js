@@ -54,7 +54,7 @@ const Menu = [
   {
     key: "routekey-book-keeping",
     label: "sidebar.schema",
-    path: "/app/book-keeping",
+    path: "/app/bookkeeping",
     icon: <i className="me-1 bi bi-people-fill"></i>,
     vissbleOnSmallScrren: true,
   },

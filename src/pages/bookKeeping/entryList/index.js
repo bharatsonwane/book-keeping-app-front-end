@@ -9,8 +9,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { getBookkeepingSchemaAction } from "src/thunks/bookKeeping";
-import { useNavigate } from "react-router-dom";
+import { getBookkeepingEntryForSchemaAction } from "src/thunks/bookKeeping";
+import { useParams } from "react-router-dom";
+import { Button } from "@mui/material";
 
 const columns = [
   { id: "no", label: "No", minWidth: 170 },
@@ -20,11 +21,13 @@ const columns = [
   { id: "updatedAt", label: "Updated At", minWidth: 170 },
 ];
 
-function BookKeepingList() {
+function BookkeepingEntryList() {
   const dispatch = useDispatch();
-  const navigation = useNavigate();
+  const params = useParams();
 
-  const [bookkeepingSchemaList, setBookkeepingSchema] = useState([]);
+  console.log("params", params);
+
+  const [entryList, setEntryList] = useState([]);
 
   const [search, changeSearch] = useState("");
 
@@ -32,15 +35,15 @@ function BookKeepingList() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   useEffect(() => {
-    getBookkeepingSchema();
+    getEntry();
   }, []);
 
-  const getBookkeepingSchema = async () => {
+  const getEntry = async () => {
     try {
       const responseData = await dispatch(
-        getBookkeepingSchemaAction()
+        getBookkeepingEntryForSchemaAction(params.id)
       ).unwrap();
-      setBookkeepingSchema(responseData);
+      setEntryList(responseData);
     } catch (error) {
       console.error(error);
     }
@@ -65,8 +68,20 @@ function BookKeepingList() {
     <>
       <div
         className={`p-2 container-fluid d-flex flex-row justify-content-between bg-primary text-white`}
+        style={{ alignItems: "center" }}
       >
-        <h4>Bookkeeping Schema List</h4>
+        {/* add button */}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            // window.location.href = `/bookkeeping/entry/${params.id}`;
+          }}
+          sx={{ background: "white", color: "black", height: "40px" }}
+        >
+          Add Entry
+        </Button>
+        <h4>Bookkeeping Entry List</h4>
         <div className="w-20">
           <Searchbox
             value={search}
@@ -93,7 +108,7 @@ function BookKeepingList() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {bookkeepingSchemaList
+                {entryList
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     return (
@@ -101,24 +116,7 @@ function BookKeepingList() {
                         hover
                         role="checkbox"
                         tabIndex={-1}
-                        key={row.id}
-                        onClick={() => {
-                          if (row.isValidated) {
-                            navigation(
-                              `/app/bookkeeping/schema/${row.id}/list`
-                            );
-                          } else {
-                            navigation(
-                              `/app/bookkeeping/schema/${row.id}/schema-update`
-                            );
-                          }
-                        }}
-                        sx={{
-                          cursor: "pointer",
-                          backgroundColor: row.isValidated
-                            ? "#88E788"
-                            : "	#fffee0",
-                        }}
+                        key={row.code}
                       >
                         {columns.map((column) => {
                           const value = row[column.id];
@@ -146,7 +144,7 @@ function BookKeepingList() {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={bookkeepingSchemaList.length}
+            count={entryList.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -158,4 +156,4 @@ function BookKeepingList() {
   );
 }
 
-export default BookKeepingList;
+export default BookkeepingEntryList;

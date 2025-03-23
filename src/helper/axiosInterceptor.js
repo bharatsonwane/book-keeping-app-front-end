@@ -25,7 +25,7 @@ const getAxios = (specificBaseUrl) => {
     // interceptors Request------------------------------------
     instance.interceptors.request.use(
         async (config) => {
-            let userToken = Cookies.get('hrmAuth');
+            let userToken = Cookies.get('authJwtToken');
             let token = userToken ? JSON.parse(userToken) : '';
 
             if (token) {
@@ -52,7 +52,7 @@ const getAxios = (specificBaseUrl) => {
         async (error) => {
             if (error.response && error.response.status === 401) {
                 //dispatch action using store to show token expire popup-----
-                Cookies.remove('hrmAuth')
+                Cookies.remove('authJwtToken')
                 window.location.pathname = "/"
                 return new Promise((resolve, reject) => {
                     reject(error);

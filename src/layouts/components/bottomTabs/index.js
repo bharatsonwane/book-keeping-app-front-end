@@ -7,7 +7,7 @@ const BottomTab = () => {
   const themeObj = useThemeContext();
   const Location = useLocation();
   useEffect(() => {
-    console.log(Location);
+    // console.log(Location);
   }, [Location]);
   const getThemedTextColor = () => {
     if (themeObj.theme === "light") {
