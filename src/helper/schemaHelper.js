@@ -1,3 +1,4 @@
+import _ from "lodash";
 /**
  * Function to find a tab object by tabLabel
  * @param {Object} schema - The schema object to search within
@@ -48,4 +49,28 @@ export const getInitialTabLabel = (schema) => {
     }
   }
   return null;
+};
+
+export const getInitialSchemaValueObject = (schema) => {
+
+  const valueObject = {};
+
+  const recursiveAction = (node) => {
+
+
+    if(node.children){
+      for (const child of node.children) {
+        recursiveAction(child);
+      }
+
+    } else if(node.dataMappingName) {
+     _.set(valueObject, node.dataMappingName, "");
+    }
+
+
+  };
+
+  recursiveAction(schema);
+
+  return valueObject;
 };

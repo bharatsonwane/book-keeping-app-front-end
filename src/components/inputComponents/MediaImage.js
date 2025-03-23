@@ -128,8 +128,8 @@ export const MediaImage = (props) => {
     }
 
     const getArticleIdentifiers = () => {
-        let gtin = _.get(_state, 'formObject.gtin');
-        let _2an = _.get(_state, 'formObject._2an');
+        let gtin = _.get(_state, 'formDataObject.gtin');
+        let _2an = _.get(_state, 'formDataObject._2an');
         let queryParams;
         if (gtin && _2an) {
             queryParams = `gtin=${gtin}&_2an=${_2an}`;
@@ -186,8 +186,8 @@ export const MediaImage = (props) => {
         setShowCropModal(true);
         if (!!src.match(regex)) {
             //   //Image URL found
-            const businessId = _.get(_.find(_state.formObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formObject.businessIdentifiers[0].id)
-            const gtin = _.get(_state, 'formObject.gtin', _state.formObject._2an)
+            const businessId = _.get(_.find(_state.formDataObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formDataObject.businessIdentifiers[0].id)
+            const gtin = _.get(_state, 'formDataObject.gtin', _state.formDataObject._2an)
             const downloadImageData = await dispatch(getImageDownload({ businessId: businessId, gtin: gtin, url: src })).unwrap();
             //   setEditState({ ...editState, imageType: type, url: src });
             setEditState({ ...editState, imageType: type, url: src, editingSrc: 'data:image/png;base64,' + downloadImageData })
@@ -199,8 +199,8 @@ export const MediaImage = (props) => {
 
     const deleteClicked = (url, type) => {
         const handleModalDeleteOk = async () => {
-            const businessId = _.get(_.find(_state.formObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formObject.businessIdentifiers[0].id)
-            const gtin = _.get(_state, 'formObject.gtin', _state.formObject._2an)
+            const businessId = _.get(_.find(_state.formDataObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formDataObject.businessIdentifiers[0].id)
+            const gtin = _.get(_state, 'formDataObject.gtin', _state.formDataObject._2an)
             try {
                 await dispatch(deleteImageAction({
                     url: url,
@@ -231,8 +231,8 @@ export const MediaImage = (props) => {
 
     const uploadImage = async () => {
         let queryParams = getArticleIdentifiers();
-        const businessId = _.get(_.find(_state.formObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formObject.businessIdentifiers[0].id)
-        const gtin = _.get(_state, 'formObject.gtin', _state.formObject._2an)
+        const businessId = _.get(_.find(_state.formDataObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formDataObject.businessIdentifiers[0].id)
+        const gtin = _.get(_state, 'formDataObject.gtin', _state.formDataObject._2an)
         const formData = new FormData();
         const pathType = _.get(docUrl, `pathType`)
         formData.append(pathType, _.get(docUrl, `readyToUpload`));
@@ -265,8 +265,8 @@ export const MediaImage = (props) => {
         try {
             if (editState.imageType === 'other') {
                 const url = _.get(editState, `url`)
-                const businessId = _.get(_.find(_state.formObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formObject.businessIdentifiers[0].id)
-                const gtin = _.get(_state, 'formObject.gtin', _state.formObject._2an)
+                const businessId = _.get(_.find(_state.formDataObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formDataObject.businessIdentifiers[0].id)
+                const gtin = _.get(_state, 'formDataObject.gtin', _state.formDataObject._2an)
                 dispatch(deleteImageAction({
                     url: url,
                     businessId: businessId,

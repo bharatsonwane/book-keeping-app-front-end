@@ -1,14 +1,13 @@
 import React from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import transactionSchema from "src/helper/schema/transactionSchema";
-import SchemaMainRenderer from "./components/SchemaMainRenderer";
+import SchemaMainRenderer from "./form/SchemaMainRenderer";
 import BookKeepingList from "./list";
 import UpdateSchema from "./updateSchema";
 import BookkeepingEntryList from "./entryList";
 
 function BookKeeping() {
   const Location = useLocation();
-
 
   return (
     <div className="main-page-container">
@@ -23,7 +22,7 @@ function BookKeeping() {
         <Route path={"list"} element={<BookKeepingList />} />
 
         <Route
-          path={"form"}
+          path={"schema/:id/new"}
           element={<SchemaMainRenderer schema={transactionSchema} />}
         />
       </Routes>

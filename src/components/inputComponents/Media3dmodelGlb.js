@@ -56,8 +56,8 @@ export const Media3dmodelGlb = (props) => {
 
 
     const uploadToServerMultiple = async (fromSection, formData) => {
-        const businessId = _.get(_.find(_state.formObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formObject.businessIdentifiers[0].id)
-        const gtin = _.get(_state, 'formObject.gtin', _state.formObject._2an)
+        const businessId = _.get(_.find(_state.formDataObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formDataObject.businessIdentifiers[0].id)
+        const gtin = _.get(_state, 'formDataObject.gtin', _state.formDataObject._2an)
         try {
             dispatch(addRemoveSectionLoadingAction({ name: name, section: section, type: "add" }))
             await dispatch(uploadProductFileAction({
@@ -87,8 +87,8 @@ export const Media3dmodelGlb = (props) => {
 
     const deleteClicked = async (url, type) => {
         const handleModalDeleteOk = async () => {
-            const businessId = _.get(_.find(_state.formObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formObject.businessIdentifiers[0].id)
-            const gtin = _.get(_state, 'formObject.gtin', _state.formObject._2an)
+            const businessId = _.get(_.find(_state.formDataObject.businessIdentifiers, function (o) { return o.type === "VATID" }), 'id', _state.formDataObject.businessIdentifiers[0].id)
+            const gtin = _.get(_state, 'formDataObject.gtin', _state.formDataObject._2an)
             try {
                 await dispatch(deleteImageAction({
                     url: url,

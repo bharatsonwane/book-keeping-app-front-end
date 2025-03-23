@@ -10,7 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { getBookkeepingEntryForSchemaAction } from "src/thunks/bookKeeping";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 
 const columns = [
@@ -24,8 +24,7 @@ const columns = [
 function BookkeepingEntryList() {
   const dispatch = useDispatch();
   const params = useParams();
-
-  console.log("params", params);
+  const navigation = useNavigate();
 
   const [entryList, setEntryList] = useState([]);
 
@@ -75,7 +74,7 @@ function BookkeepingEntryList() {
           variant="contained"
           color="secondary"
           onClick={() => {
-            // window.location.href = `/bookkeeping/entry/${params.id}`;
+            navigation(`/app/bookkeeping/schema/${params.id}/new`);
           }}
           sx={{ background: "white", color: "black", height: "40px" }}
         >

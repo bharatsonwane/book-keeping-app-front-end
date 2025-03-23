@@ -17,6 +17,10 @@ export const bookKeepingSlice = createSlice({
   name: "bookKeeping",
   initialState: initState,
   reducers: {
+    updateFormObject: (state, action) => {
+      state.formDataObject = action.payload;
+    },
+
     formFieldDataUpdateAction: (state, action) => {
       const { name, value } = action.payload;
       _.set(state.formDataObject, `${name}`, value);
@@ -50,6 +54,9 @@ export const bookKeepingSlice = createSlice({
   },
 });
 
-export const { formFieldDataUpdateAction, formFieldValidationAction } =
-  bookKeepingSlice.actions;
+export const {
+  updateFormObject,
+  formFieldDataUpdateAction,
+  formFieldValidationAction,
+} = bookKeepingSlice.actions;
 export default bookKeepingSlice;
