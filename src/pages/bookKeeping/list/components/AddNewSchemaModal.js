@@ -2,24 +2,40 @@ import { Box, Modal, Typography } from "@mui/material";
 import React from "react";
 import { TextField, Button } from "@mui/material";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createBookkeepingSchemaByAIAction } from "src/thunks/bookKeeping";
 
 function AddNewSchemaModal({
   open,
   handleClose = () => {},
   refreshList = () => {},
 }) {
-  const [schemaDetails, setSchemaDetails] = useState("");
+  const dispatch = useDispatch();
+  const [schemaDetails, setSchemaDetails] = useState({
+    domainName: "",
+    description: "",
+  });
 
   const handleInputChange = (event) => {
-    setSchemaDetails(event.target.value);
+    setSchemaDetails({
+      ...schemaDetails,
+      [event.target.name]: event.target.value,
+    });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     try {
+      await dispatch(createBookkeepingSchemaByAIAction(schemaDetails)).unwrap();
       console.log("Schema Details:", schemaDetails);
       refreshList();
       handleClose();
-    } catch (error) {}
+      setSchemaDetails({
+        domainName: "",
+        description: "",
+      })
+    } catch (error) {
+      console.info("Error in creating schema", error);
+    }
   };
 
   return (
@@ -40,10 +56,21 @@ function AddNewSchemaModal({
         </Typography>
 
         <TextField
+          name="domainName"
+          label="Domain Name"
+          variant="outlined"
+          fullWidth
+          value={schemaDetails.domainName}
+          onChange={handleInputChange}
+          margin="normal"
+        />
+
+        <TextField
+          name="description"
           label="Schema Details"
           variant="outlined"
           fullWidth
-          value={schemaDetails}
+          value={schemaDetails.description}
           onChange={handleInputChange}
           margin="normal"
         />

@@ -20,6 +20,26 @@ export const validateAllFormFieldAction = createAsyncThunk(
   }
 );
 
+// schema/create-by-ai
+
+export const createBookkeepingSchemaByAIAction = createAsyncThunk(
+  "bookkeeping/createBookkeepingSchemaByAIAction",
+  async (model, thunkApi) => {
+    try {
+      let res = await getAxios().post(`/schema/create-by-ai`, {
+        domainName: model.domainName,
+        description: model.description,
+      });
+
+      const responseData = res.data;
+
+      return responseData;
+    } catch (error) {
+      return thunkApi.rejectWithValue("error");
+    }
+  }
+);
+
 export const getBookkeepingSchemaAction = createAsyncThunk(
   "bookkeeping/getBookkeepingSchemaAction",
   async (model, thunkApi) => {
@@ -67,7 +87,6 @@ export const updateBookkeepingSchemaAction = createAsyncThunk(
   }
 );
 
-
 export const addBookkeepingEntryAction = createAsyncThunk(
   "bookkeeping/updateBookkeepingSchemaAction",
   async (model, thunkApi) => {
@@ -100,7 +119,6 @@ export const getBookkeepingColumnsForSchemaAction = createAsyncThunk(
     }
   }
 );
-
 
 export const getBookkeepingEntryForSchemaAction = createAsyncThunk(
   "bookkeeping/getBookkeepingEntryForSchemaAction",
