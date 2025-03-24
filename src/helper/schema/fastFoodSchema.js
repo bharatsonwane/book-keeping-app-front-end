@@ -1,4 +1,4 @@
-export default {
+const fastFoodSchema = {
   name: "fastFoodSchema",
   label: "Fast Food Schema",
   type: "schema",
@@ -24,6 +24,7 @@ export default {
               ],
               readOnly: false,
               isMultilingual: false,
+              isShowInTable: true,
             },
             {
               label: "Fast Food ID",
@@ -37,6 +38,7 @@ export default {
               ],
               readOnly: false,
               isMultilingual: false,
+              isShowInTable: true,
             },
             {
               label: "Category",
@@ -62,6 +64,7 @@ export default {
               ],
               readOnly: false,
               isMultilingual: false,
+              isShowInTable: true,
             },
             {
               label: "Preparation Time",
@@ -183,3 +186,5 @@ export default {
     },
   ],
 };
+
+export default fastFoodSchema;

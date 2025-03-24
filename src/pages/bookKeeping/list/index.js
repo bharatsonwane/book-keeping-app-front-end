@@ -11,6 +11,8 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { getBookkeepingSchemaAction } from "src/thunks/bookKeeping";
 import { useNavigate } from "react-router-dom";
+import AddNewSchemaModal from "./components/AddNewSchemaModal";
+import { Button } from "@mui/material";
 
 const columns = [
   { id: "no", label: "No", minWidth: 170 },
@@ -25,11 +27,11 @@ function BookKeepingList() {
   const navigation = useNavigate();
 
   const [bookkeepingSchemaList, setBookkeepingSchema] = useState([]);
-
   const [search, changeSearch] = useState("");
-
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  const [openAddNewSchemaModal, setOpenAddNewSchemaModal] = useState(false);
 
   useEffect(() => {
     getBookkeepingSchema();
@@ -63,9 +65,28 @@ function BookKeepingList() {
 
   return (
     <>
+      <AddNewSchemaModal
+        open={openAddNewSchemaModal}
+        handleClose={() => {
+          setOpenAddNewSchemaModal(false);
+        }}
+        refreshList={getBookkeepingSchema}
+      />
       <div
         className={`p-2 container-fluid d-flex flex-row justify-content-between bg-primary text-white`}
+        style={{ alignItems: "center" }}
       >
+        {/* add button */}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => {
+            setOpenAddNewSchemaModal(true);
+          }}
+          sx={{ background: "white", color: "black", height: "40px" }}
+        >
+          Add New Schema
+        </Button>
         <h4>Bookkeeping Schema List</h4>
         <div className="w-20">
           <Searchbox

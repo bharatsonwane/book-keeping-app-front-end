@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import _ from "lodash";
 import { useDispatch } from "react-redux";
 import { Searchbox } from "src/components/searchbox";
 import Paper from "@mui/material/Paper";
@@ -9,23 +10,19 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { getBookkeepingEntryForSchemaAction } from "src/thunks/bookKeeping";
+import {
+  getBookkeepingColumnsForSchemaAction,
+  getBookkeepingEntryForSchemaAction,
+} from "src/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
-
-const columns = [
-  { id: "no", label: "No", minWidth: 170 },
-  { id: "label", label: "Label", minWidth: 170 },
-  { id: "version", label: "Version", minWidth: 170 },
-  { id: "createdAt", label: "Created At", minWidth: 170 },
-  { id: "updatedAt", label: "Updated At", minWidth: 170 },
-];
 
 function BookkeepingEntryList() {
   const dispatch = useDispatch();
   const params = useParams();
   const navigation = useNavigate();
 
+  const [columnList, setColumnList] = useState([]);
   const [entryList, setEntryList] = useState([]);
 
   const [search, changeSearch] = useState("");
@@ -33,16 +30,34 @@ function BookkeepingEntryList() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
+  const columns = useMemo(() => {
+    const list = [];
+    columnList.forEach((column) => {
+      list.push({
+        id: column.dataMappingName,
+        dataMappingName: column.dataMappingName,
+        label: column.label,
+        minWidth: 170,
+        align: "center",
+        format: (value) => value.toLocaleString("en-US"),
+      });
+    });
+    return list;
+  }, [columnList]);
+
   useEffect(() => {
     getEntry();
   }, []);
 
   const getEntry = async () => {
     try {
-      const responseData = await dispatch(
-        getBookkeepingEntryForSchemaAction(params.id)
-      ).unwrap();
-      setEntryList(responseData);
+      const [columnItems, entriesData] = await Promise.all([
+        dispatch(getBookkeepingColumnsForSchemaAction(params.id)).unwrap(),
+        dispatch(getBookkeepingEntryForSchemaAction(params.id)).unwrap(),
+      ]);
+
+      setColumnList(columnItems);
+      setEntryList(entriesData);
     } catch (error) {
       console.error(error);
     }
@@ -94,12 +109,12 @@ function BookkeepingEntryList() {
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
-                <TableRow>
+                <TableRow >
                   {columns.map((column) => (
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      style={{ minWidth: column.minWidth }}
+                      style={{ minWidth: column.minWidth, fontWeight: 'bold', fontSize: '1.2em' }}
                     >
                       {column.label}
                     </TableCell>
@@ -110,6 +125,7 @@ function BookkeepingEntryList() {
                 {entryList
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
+                    const entryData = row.entryData;
                     return (
                       <TableRow
                         hover
@@ -118,7 +134,6 @@ function BookkeepingEntryList() {
                         key={row.code}
                       >
                         {columns.map((column) => {
-                          const value = row[column.id];
                           if (column.id === "no") {
                             return (
                               <TableCell key={column.id} align={column.align}>
@@ -128,9 +143,7 @@ function BookkeepingEntryList() {
                           }
                           return (
                             <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
+                              {_.get(entryData, column.dataMappingName, "")}
                             </TableCell>
                           );
                         })}
