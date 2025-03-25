@@ -1,4 +1,5 @@
 import { Box, Modal, Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import React from "react";
 import { TextField, Button } from "@mui/material";
 import { useState } from "react";
@@ -11,8 +12,8 @@ function AddNewSchemaModal({
   refreshList = () => {},
 }) {
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [schemaDetails, setSchemaDetails] = useState({
-    domainName: "",
     description: "",
   });
 
@@ -25,15 +26,17 @@ function AddNewSchemaModal({
 
   const handleSubmit = async () => {
     try {
+      setLoading(true);
       await dispatch(createBookkeepingSchemaByAIAction(schemaDetails)).unwrap();
       console.log("Schema Details:", schemaDetails);
       refreshList();
       handleClose();
       setSchemaDetails({
-        domainName: "",
         description: "",
-      })
+      });
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.info("Error in creating schema", error);
     }
   };
@@ -55,15 +58,18 @@ function AddNewSchemaModal({
           Add New Schema
         </Typography>
 
-        <TextField
-          name="domainName"
-          label="Domain Name"
-          variant="outlined"
-          fullWidth
-          value={schemaDetails.domainName}
-          onChange={handleInputChange}
-          margin="normal"
-        />
+        {loading && (
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            <CircularProgress />
+          </div>
+        )}
 
         <TextField
           name="description"

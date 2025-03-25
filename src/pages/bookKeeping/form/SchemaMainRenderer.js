@@ -89,10 +89,12 @@ function SchemaMainRenderer() {
         return;
       }
 
-      await dispatch(addBookkeepingEntryAction({
-        schemaId: params.id,
-        entryData: formDataObject,
-      }))
+      await dispatch(
+        addBookkeepingEntryAction({
+          schemaId: params.id,
+          entryData: formDataObject,
+        })
+      );
 
       navigate(`/app/bookkeeping/schema/${params.id}/list`);
 
@@ -135,7 +137,10 @@ function SchemaMainRenderer() {
             setSelectedTabLabel={setSelectedTabLabel}
           />
 
-          <div className="product-profile--content" style={{ minHeight: 300 }}>
+          <div
+            className="product-profile--content"
+            style={{ minHeight: 300, maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}
+          >
             <div className="row">
               {!!tabData && (
                 <SchemaFieldRenderer
