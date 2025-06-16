@@ -1,13 +1,8 @@
 import React from "react";
-import Form from "./components/Form";
+import LoginPage from "./view";
 
 const Login = () => {
-  return (
-    <>
-      <div className="text-xl">hello</div>
-      <Form></Form>
-    </>
-  );
+  return <LoginPage />;
 };
 
 export default Login;

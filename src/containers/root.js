@@ -14,6 +14,7 @@ import I18n from "../locales";
 import Store from "../store";
 import MainApp from "./mainapp";
 import Login from "../pages/login";
+import Signup from "src/pages/signup";
 
 const RootComponent = (props) => {
   return (
@@ -59,7 +60,6 @@ const RootConatainer = (props) => {
     }
   };
 
-
   return (
     <Routes>
       <Route
@@ -77,6 +77,7 @@ const RootConatainer = (props) => {
         element={getToken() ? <MainApp /> : <Navigate replace to="/login" />}
       ></Route>
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       {/* <Route path="/" element={<Navigate replace to="/app" />} /> */}
     </Routes>
   );
