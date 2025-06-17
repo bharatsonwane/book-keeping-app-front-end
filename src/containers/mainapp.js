@@ -6,6 +6,7 @@ import Services from "../pages/services/index";
 import Team from "../pages/team";
 import Work from "../pages/work";
 import BookKeeping from "src/pages/bookKeeping";
+import AuthLoading from "src/pages/loading/index";
 
 const MainApp = (props) => {
   const Location = useLocation();
@@ -25,21 +26,22 @@ const MainApp = (props) => {
     //     </Routes>
     //   </div>
     // </WithBottomTab>
-    <WithSideBar>
-      <div className="container-fluid main-app-container">
-        <Routes>
-          <Route
-            path={"/"}
-            element={<Navigate replace to={`${Location.pathname}/home`} />}
-          />
-          <Route path={`home/*`} element={<Home />} />
-          <Route path={`services/*`} element={<Services />}></Route>
-          <Route path={`team/*`} element={<Team />} />
-          <Route path={`work/*`} element={<Work />} />
-          <Route path={`bookkeeping/*`} element={<BookKeeping />} />
-        </Routes>
-      </div>
-    </WithSideBar>
+    // <WithSideBar>
+    <div className="container-fluid main-app-container">
+      <Routes>
+        <Route
+          path={"/"}
+          element={<Navigate replace to={`${Location.pathname}/home`} />}
+        />
+        <Route path={`home/*`} element={<Home />} />
+        <Route path={`auth-loading/*`} element={<AuthLoading />} />
+        <Route path={`services/*`} element={<Services />}></Route>
+        <Route path={`team/*`} element={<Team />} />
+        <Route path={`work/*`} element={<Work />} />
+        <Route path={`bookkeeping/*`} element={<BookKeeping />} />
+      </Routes>
+    </div>
+    // </WithSideBar>
     // <WithNavBar>
     //   <div className="container-fluid main-app-container mx-0">
     //     <Routes>

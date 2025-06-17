@@ -15,13 +15,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SignupSchema } from "../schema";
 import SelectComponent from "src/molecules/select";
 import AuthLayout from "src/layouts/auth";
-import { useSignUpMutation } from "../api/auth.api";
+import { useRegisterTenantMutation } from "../api/auth.api";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import FormError from "src/molecules/form-error";
 
 const Signup = () => {
-  const [signUpFn, { error, isLoading }] = useSignUpMutation();
+  const [signUpFn, { error, isLoading }] = useRegisterTenantMutation();
   const {
     control,
     handleSubmit,

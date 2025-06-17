@@ -12,7 +12,7 @@ import AuthLayout from "src/layouts/auth";
 import { LoginSchema } from "../schema";
 import FormError from "src/molecules/form-error";
 import Password from "src/molecules/password";
-// import { useLoginMutation } from "@/redux/api/auth.api";
+import { useLoginMutation } from "../../signup/api/auth.api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Loader2 } from "lucide-react";
 import React from "react";
@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  // const [loginFn, { error, isLoading }] = useLoginMutation();
+  const [loginFn, { error, isLoading }] = useLoginMutation();
 
   const {
     control,
@@ -32,10 +32,10 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (data) => {
-    // const response = await loginFn(data);
-    // if (response.data) {
-    //   navigate("/auth-loading");
-    // }
+    const response = await loginFn(data);
+    if (response.data) {
+      navigate("/auth-loading");
+    }
   };
 
   return (
