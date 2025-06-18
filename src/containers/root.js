@@ -48,8 +48,8 @@ const RootConatainer = (props) => {
   }, [location]);
 
   const getToken = () => {
-    let userToken = Cookies.get("authJwtToken");
-    // console.log("userToken", userToken)
+    let userToken = localStorage.getItem("token");
+    console.log("userToken", userToken);
 
     // let token = userToken ? true : false;
     // setUserToken(token)

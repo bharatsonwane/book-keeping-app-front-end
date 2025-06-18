@@ -1,20 +1,17 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  useGetUiConfigQuery,
+  useLazyGetUiConfigQuery,
+} from "../api/sidebar.api";
 
 const Loading = () => {
   const navigate = useNavigate();
-  // const { data, error, isLoading } = useGetUiConfigQuery();
+  const { data } = useGetUiConfigQuery();
 
-  useEffect(
-    () => {
-      //   if (data && !isLoading && !error) {
-      //     navigate("/entity-home");
-      //   }
-    },
-    [
-      // data, isLoading, error
-    ]
-  );
+  if (data?.data?.children?.length > 0) {
+    navigate(`/app/home/list/${data?.data?.children[0]?.schemaId}`);
+  }
 
   return (
     <div className="h-[100vh] w-full flex justify-center items-center">

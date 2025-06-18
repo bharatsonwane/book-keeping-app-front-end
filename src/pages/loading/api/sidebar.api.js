@@ -1,13 +1,13 @@
 import toast from "react-hot-toast";
-import apiSlice from ".";
-import { transferErrorResponse } from "@/lib/transferResponse";
-import { setUiEntities } from "../slice/uiEntities";
+import apiSlice from "src/redux/api/index";
+import { transferErrorResponse } from "src/lib/transferResponse";
+import { setUiEntities } from "src/slice/entities";
 
 export const sidebarApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getUiConfig: builder.query({
       query: () => ({
-        url: "/ui-config/get-entities",
+        url: "/ui/get-sidebar-schema",
         method: "GET",
       }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
@@ -22,4 +22,4 @@ export const sidebarApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const {} = sidebarApi;
+export const { useLazyGetUiConfigQuery, useGetUiConfigQuery } = sidebarApi;

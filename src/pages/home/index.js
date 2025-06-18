@@ -1,21 +1,17 @@
 import React from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import HomeList from "./components/list";
+import HomeList from "./view/Home";
 
 const Home = () => {
   const Location = useLocation();
   return (
-    <>
-      <div className="main-page-container">
-        <Routes>
-          <Route
-            path={`/`}
-            element={<Navigate replace="/" to={`${Location.pathname}/list`} />}
-          ></Route>
-          <Route path={"list"} element={<HomeList />}></Route>
-        </Routes>
-      </div>
-    </>
+    <Routes>
+      <Route
+        path={`/`}
+        element={<Navigate replace="/" to={`${Location.pathname}/list/id`} />}
+      ></Route>
+      <Route path={"list/:id"} element={<HomeList />}></Route>
+    </Routes>
   );
 };
 

@@ -19,7 +19,7 @@ const Password = ({ fieldName, placeholder, control }) => {
             type={showPassword ? "text" : "password"}
             onChange={onChange}
             value={value}
-            className={cn("py-5 my-3 placeholder:text-gray-400 pr-10")}
+            className={cn("py-3 my-3 placeholder:text-gray-400 pr-10")}
           />
         )}
       />

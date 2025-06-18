@@ -34,7 +34,7 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     const response = await loginFn(data);
     if (response.data) {
-      navigate("/auth-loading");
+      navigate("/app/auth-loading");
     }
   };
 

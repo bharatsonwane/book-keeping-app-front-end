@@ -16,11 +16,13 @@ export const authApi = apiSlice.injectEndpoints({
         const { data } = await queryFulfilled;
 
         localStorage.setItem("token", data.data.token);
+        localStorage.setItem("x-tenant-schema", data.data.userData.tenantId);
 
         dispatch(loginUser(data.data));
 
         toast.success("Logged In!!");
       },
+
       transformErrorResponse: transferErrorResponse,
     }),
 

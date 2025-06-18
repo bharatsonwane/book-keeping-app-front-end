@@ -20,6 +20,7 @@ export const authSlice = createSlice({
       state.isLoggedIn = false;
       state.userData = false;
       localStorage.removeItem("token");
+      localStorage.removeItem("x-tenant-schema");
     },
   },
 

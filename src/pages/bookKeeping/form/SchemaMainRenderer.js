@@ -15,6 +15,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { updateFormObject } from "src/slice/bookKeeping";
+import foodSchema from "src/helper/schema/foodSchema";
 
 function SchemaMainRenderer() {
   const params = useParams();
@@ -57,9 +58,8 @@ function SchemaMainRenderer() {
 
   const getSchema = async () => {
     try {
-      const responseData = await dispatch(
-        getBookkeepingSchemaDetailsAction(params.id)
-      ).unwrap();
+      const responseData = foodSchema;
+
       setSchema(responseData);
 
       const initialData = getInitialSchemaValueObject(responseData);
@@ -139,7 +139,11 @@ function SchemaMainRenderer() {
 
           <div
             className="product-profile--content"
-            style={{ minHeight: 300, maxHeight: "calc(100vh - 250px)", overflowY: "auto" }}
+            style={{
+              minHeight: 300,
+              maxHeight: "calc(100vh - 250px)",
+              overflowY: "auto",
+            }}
           >
             <div className="row">
               {!!tabData && (

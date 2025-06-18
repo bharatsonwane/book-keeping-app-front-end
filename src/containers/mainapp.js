@@ -35,6 +35,7 @@ const MainApp = (props) => {
         />
         <Route path={`home/*`} element={<Home />} />
         <Route path={`auth-loading/*`} element={<AuthLoading />} />
+        <Route path={`home/*`} element={<AuthLoading />} />
         <Route path={`services/*`} element={<Services />}></Route>
         <Route path={`team/*`} element={<Team />} />
         <Route path={`work/*`} element={<Work />} />

@@ -17,7 +17,7 @@ import apiSlice from "src/redux/api/index";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["auth", "ui"],
+  whitelist: ["auth", "ui", "entities"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -12,9 +12,14 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     baseUrl,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem("token") || "";
+      const tenant_schema = localStorage.getItem("x-tenant-schema") || "";
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
         headers.set("Accept", "*");
+      }
+
+      if (tenant_schema) {
+        headers.set("x-tenant-schema", `${tenant_schema}`);
       }
       return headers;
     },
@@ -36,6 +41,7 @@ const apiSlice = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: () => ({}),
   tagTypes: Object.values(RTK_TAGS),
+  keepUnusedDataFor: 0,
 });
 
 export default apiSlice;
