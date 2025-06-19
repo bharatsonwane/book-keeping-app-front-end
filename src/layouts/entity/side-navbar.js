@@ -8,7 +8,7 @@ import { cn } from "src/lib/utils";
 const SideNavbar = () => {
   const navigate = useNavigate();
   const ui = useSelector((state) => state.entities);
-  console.log("ui", ui);
+
   const pathName = useLocation();
   const [selectedEntity, setSelectedEntity] = useState(null);
 
@@ -28,12 +28,6 @@ const SideNavbar = () => {
 
   return (
     <div className="w-[17%] border-r h-full flex flex-col items-center px-4">
-      <div className="pt-6 mb-5 w-full">
-        <Button className="w-full">Dashboard</Button>
-      </div>
-
-      <div className="w-full text-gray-500">Your entities</div>
-
       <div className="w-full flex flex-col mt-3 gap-1">
         {ui?.uiEntities?.children?.map((ele, i) => {
           return (

@@ -49,7 +49,6 @@ const RootConatainer = (props) => {
 
   const getToken = () => {
     let userToken = localStorage.getItem("token");
-    console.log("userToken", userToken);
 
     // let token = userToken ? true : false;
     // setUserToken(token)
