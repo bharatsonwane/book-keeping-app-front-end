@@ -5,7 +5,6 @@ import {
   getTabDataAndParentTabLabelByName,
 } from "src/helper/schemaHelper";
 import SchemaTabRenderer from "../../../components/schemaRender/SchemaTabRenderer";
-import SchemaFieldRenderer from "../../../components/schemaRender/SchemaFieldRenderer";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addBookkeepingEntryAction,
@@ -14,8 +13,14 @@ import {
 } from "src/redux/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
-import { updateFormObject } from "src/redux/slice/bookKeeping";
+import {
+  formFieldDataUpdateAction,
+  formFieldValidationAction,
+  updateFormObject,
+} from "src/redux/slice/bookKeeping";
 import foodSchema from "src/helper/schema/foodSchema";
+import SchemaComponentRenderer from "src/components/schemaRender/SchemaComponentRenderer";
+import { getValidationErrorForFieldWithZod } from "src/helper/zodValidationHelper";
 
 const foodDetailSchema = {
   name: "foodDetailSchema",
@@ -448,7 +453,9 @@ function SchemaMainRenderer() {
     (state) => state.bookKeeping.formDataObject
   );
 
-  console.log("formDataObject", formDataObject);
+  const formValidationObject = useSelector(
+    (state) => state.bookKeeping.formValidation
+  );
 
   const [schema, setSchema] = useState(null);
 
@@ -496,6 +503,28 @@ function SchemaMainRenderer() {
     setLanguageData({ ...languageData, selectedLanguage });
   };
 
+  const handleInputChange = (event) => {
+    dispatch(
+      formFieldDataUpdateAction({
+        name: event.target.name,
+        value: event.target.value,
+      })
+    );
+  };
+
+  const handleBlurChange = async (e, item) => {
+    /** field validation */
+    const { dataMappingName, errorMessage } =
+      await getValidationErrorForFieldWithZod(item, e.target.value);
+    dispatch(
+      formFieldValidationAction({
+        dataMappingName: dataMappingName,
+        errorMessage: errorMessage,
+        touched: true,
+      })
+    );
+  };
+
   const handleSubmit = async () => {
     try {
       const response = await dispatch(
@@ -518,8 +547,6 @@ function SchemaMainRenderer() {
       );
 
       navigate(`/app/bookkeeping/schema/${params.id}/list`);
-
-      console.log("formDataObject", formDataObject);
     } catch (error) {
       console.error("form validation error", error);
     }
@@ -567,13 +594,16 @@ function SchemaMainRenderer() {
             }}
           >
             <div className="row">
-              {!!tabData && (
-                <SchemaFieldRenderer
-                  node={tabData}
-                  languageData={languageData}
-                  handleChangeLanguage={handleChangeLanguage}
-                />
-              )}
+              <SchemaComponentRenderer
+                sqlQueryList={schema?.sqlQueryList}
+                node={tabData}
+                languageData={languageData}
+                dataObject={formDataObject}
+                formValidationObject={formValidationObject}
+                handleChangeLanguage={handleChangeLanguage}
+                handleInputChange={handleInputChange}
+                handleBlurChange={handleBlurChange}
+              />
             </div>
           </div>
         </React.Fragment>

@@ -16,8 +16,8 @@ function SchemaFormFieldRender(props) {
     dataObject = {},
     formValidationObject = {},
     languageData = {},
-    onBlur = () => {},
-    onChange = () => {},
+    onChange = (dataMappingName, value) => {},
+    onBlur = (dataMappingName, value) => {},
   } = props;
 
   const name = (() => {
@@ -53,27 +53,6 @@ function SchemaFormFieldRender(props) {
     ? _.get(formValidationObject, `touched[${node.dataMappingName}]`, false)
     : false;
 
-  const handleInputChange = (e) => {
-    // dispatch(
-    //   formFieldDataUpdateAction({
-    //     name: name,
-    //     value: e.target.value,
-    //   })
-    // );
-  };
-
-  const handleBlurChange = async (e, item) => {
-    // /** field validation */
-    // const { dataMappingName, errorMessage } =
-    //   await getValidationErrorForFieldWithZod(item, e.target.value);
-    // dispatch(
-    //   formFieldValidationAction({
-    //     dataMappingName: dataMappingName,
-    //     errorMessage: errorMessage,
-    //     touched: true,
-    //   })
-    // );
-  };
 
   if (node.type === "color") {
     return (
@@ -259,9 +238,11 @@ function SchemaComponentRenderer({
   node,
   prevNode,
   languageData,
-  handleChangeLanguage = () => {},
   dataObject = {},
   formValidationObject = {},
+  handleChangeLanguage = () => {},
+  handleInputChange = () => {},
+  handleBlurChange = () => {},
 }) {
   return (
     <Fragment>
@@ -284,6 +265,9 @@ function SchemaComponentRenderer({
               prevNode={index > 0 ? list[index - 1] : null}
               dataObject={dataObject}
               formValidationObject={formValidationObject}
+              handleChangeLanguage={handleChangeLanguage}
+              handleInputChange={handleInputChange}
+              handleBlurChange={handleBlurChange}
             />
           ))}
         </Fragment>
@@ -296,10 +280,12 @@ function SchemaComponentRenderer({
               node={childNode}
               prevNode={index > 0 ? list[index - 1] : null}
               languageData={languageData}
-              handleChangeLanguage={handleChangeLanguage}
               dataObject={dataObject}
               formValidationObject={formValidationObject}
               isMultilingual={false}
+              handleChangeLanguage={handleChangeLanguage}
+              handleInputChange={handleInputChange}
+              handleBlurChange={handleBlurChange}
             />
           ))}
         </Fragment>
@@ -322,10 +308,12 @@ function SchemaComponentRenderer({
                 node={childNode}
                 prevNode={index > 0 ? list[index - 1] : null}
                 languageData={languageData}
-                handleChangeLanguage={handleChangeLanguage}
                 dataObject={dataObject}
                 formValidationObject={formValidationObject}
                 isMultilingual={false}
+                handleChangeLanguage={handleChangeLanguage}
+                handleInputChange={handleInputChange}
+                handleBlurChange={handleBlurChange}
               />
             ))}
           </div>
@@ -337,8 +325,8 @@ function SchemaComponentRenderer({
           node={node}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
-          // onBlur={(e) => handleBlurChange(e, node)}
-          // onChange={handleInputChange}
+          onChange={handleInputChange}
+          onBlur={(e) => handleBlurChange(e, node)}
         />
       )}
     </Fragment>
