@@ -2,9 +2,108 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import UiEntitesLayout from "src/layouts/entity";
 import SchemaMainRenderer from "src/pages/bookKeeping/form/SchemaMainRenderer";
-import { useGetSchemaByIdQuery } from "../../../redux/api/entitties.api";
-import Header from "../components/header";
-import Table from "../components/table";
+import {
+  useGetDataByIdQuery,
+  useGetSchemaByIdQuery,
+} from "../../../redux/api/entitties.api";
+import SchemaComponentRenderer from "src/components/schemaRender/SchemaComponentRenderer";
+
+const foodListSchema = {
+  name: "foodListSchema",
+  label: "Food List Schema",
+  type: "schema",
+  version: "1.0",
+  defaultQueryName: "getFoodList",
+  dataMappingName: "",
+  children: [
+    {
+      type: "heading",
+      label: "Food List",
+    },
+    {
+      type: "addButton",
+      label: "Add User's",
+      schemaId: "foodDetailSchema",
+      action: {
+        onClick: "navigate",
+        navigationPath: "/need-to-add-navigation-path",
+      }
+    },
+    {
+      type: "table",
+      onRowClick: {
+        navigationPath: "/.../.../..../..",
+        schemaId: "",
+      },
+      children: [
+        {
+          type: "tableColum",
+          name: "id",
+          label: "Id",
+        },
+        {
+          type: "tableColum",
+          name: "name",
+          label: "Food Name",
+        },
+        {
+          type: "tableColum",
+          name: "category",
+          label: "Food category",
+        },
+        {
+          type: "tableColum",
+          name: "cuisine",
+          label: "Cuisine",
+        },
+        {
+          type: "tableColum",
+          name: "calories",
+          label: "Calories",
+        },
+      ],
+    },
+  ],
+  sqlQueryList: [
+    {
+      queryName: "getFoodList",
+      query: `
+        SELECT
+          f.id,
+          f.name,
+          f.category,
+          f.cuisine,
+          n.calories
+        FROM food f
+        LEFT JOIN nutrition n ON n."foodId" = f.id;
+        `,
+    },
+  ],
+};
+
+const foodListData = [
+  {
+    id: 1,
+    name: "Food 1",
+    category: "Category 1",
+    cuisine: "Cuisine 1",
+    calories: 100,
+  },
+  {
+    id: 2,
+    name: "Food 2",
+    category: "Category 2",
+    cuisine: "Cuisine 2",
+    calories: 200,
+  },
+  {
+    id: 3,
+    name: "Food 3",
+    category: "Category 3",
+    cuisine: "Cuisine 3",
+    calories: 300,
+  },
+];
 
 const Home = () => {
   const params = useParams();
@@ -14,14 +113,30 @@ const Home = () => {
     { skip: !params.id }
   );
 
+  const sqlQueryList = data?.data?.schema?.sqlQueryList || [];
+  const defaultQueryName = data?.data?.schema?.defaultQueryName || "";
+  const query = sqlQueryList.find((ele) => ele.queryName === defaultQueryName);
+
+  console.log("bharatQuery", query);
+
+  // const { data: nData } = useGetDataByIdQuery(
+  //   { query: query },
+  //   { skip: !query }
+  // );
+  const nData = foodListData;
+
   return (
-    <>
-      <Header data={data?.data?.schema?.children} />
-      <Table
-        data={data?.data?.schema?.children}
-        query={data?.data?.schema?.sqlQueryList}
+    <div
+      className="container"
+      style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+    >
+      <SchemaComponentRenderer
+        node={foodListSchema}
+        sqlQueryList={data?.data?.schema?.sqlQueryList || []}
+        dataObject={nData}
+        formValidationObject={{}}
       />
-    </>
+    </div>
   );
 };
 
