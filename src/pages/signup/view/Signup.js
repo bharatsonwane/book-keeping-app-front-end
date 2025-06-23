@@ -15,7 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SignupSchema } from "../schema";
 import SelectComponent from "src/molecules/select";
 import AuthLayout from "src/layouts/auth";
-import { useRegisterTenantMutation } from "../api/auth.api";
+import { useRegisterTenantMutation } from "../../../redux/api/auth.api";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import FormError from "src/molecules/form-error";

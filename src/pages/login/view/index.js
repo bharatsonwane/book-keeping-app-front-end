@@ -12,7 +12,7 @@ import AuthLayout from "src/layouts/auth";
 import { LoginSchema } from "../schema";
 import FormError from "src/molecules/form-error";
 import Password from "src/molecules/password";
-import { useLoginMutation } from "../../signup/api/auth.api";
+import { useLoginMutation } from "../../../redux/api/auth.api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Loader2 } from "lucide-react";
 import React from "react";

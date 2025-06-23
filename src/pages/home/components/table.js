@@ -1,6 +1,6 @@
 import React from "react";
 import CustomTable from "src/components/Table";
-import { useGetDataByIdQuery } from "../api/entitties.api";
+import { useGetDataByIdQuery } from "../../../redux/api/entitties.api";
 
 const Table = ({ data, query }) => {
   const table = data?.find((ele) => ele.type == "table");

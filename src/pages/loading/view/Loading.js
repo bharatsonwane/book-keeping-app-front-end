@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   useGetUiConfigQuery,
   useLazyGetUiConfigQuery,
-} from "../api/sidebar.api";
+} from "../../../redux/api/sidebar.api";
 
 const Loading = () => {
   const navigate = useNavigate();
