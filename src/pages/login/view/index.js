@@ -89,10 +89,10 @@ const LoginPage = () => {
               >
                 {false ? (
                   <>
-                    Create Account <Loader2 className="animate-spin size-5" />
+                    Login <Loader2 className="animate-spin size-5" />
                   </>
                 ) : (
-                  "Create Account"
+                  "Login"
                 )}
               </Button>
             </CardContent>

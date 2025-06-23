@@ -13,7 +13,7 @@ import TableRow from "@mui/material/TableRow";
 import {
   getBookkeepingColumnsForSchemaAction,
   getBookkeepingEntryForSchemaAction,
-} from "src/thunks/bookKeeping";
+} from "src/redux/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 

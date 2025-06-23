@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import apiSlice from "src/redux/api/index";
 import { transferErrorResponse } from "src/lib/transferResponse";
-import { loginUser } from "src/slice/auth";
+import { loginUser } from "src/redux/slice/auth";
 
 export const authApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

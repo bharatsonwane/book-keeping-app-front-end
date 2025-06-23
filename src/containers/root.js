@@ -11,7 +11,7 @@ import {
 import { ThemeContextProvider } from "../contexts/theme";
 import Cookies from "js-cookie";
 import I18n from "../locales";
-import Store from "../store";
+import Store from "../redux/store";
 import MainApp from "./mainapp";
 import Login from "../pages/login";
 import Signup from "src/pages/signup";

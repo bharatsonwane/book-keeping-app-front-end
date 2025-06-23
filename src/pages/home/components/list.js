@@ -1,7 +1,7 @@
 import { Searchbox } from "../../../components/searchbox";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { FetchData } from "../../../thunks/home";
+import { FetchData } from "../../../redux/thunks/home";
 
 const HomeList = () => {
   const [search, changeSearch] = useState("");

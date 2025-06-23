@@ -1,7 +1,7 @@
 import react, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { userLoginAction } from "src/thunks/auth";
+import { userLoginAction } from "src/redux/thunks/auth";
 import Logo from "../../../assets/images/Eteva_Logo.svg";
 import { Spinner } from "src/components/Spinner";
 

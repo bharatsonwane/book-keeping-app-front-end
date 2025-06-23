@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Searchbox } from "src/components/searchbox";
 import { useNavigate, useParams } from "react-router-dom";
-import { getBookkeepingSchemaDetailsAction, updateBookkeepingSchemaAction } from "src/thunks/bookKeeping";
+import { getBookkeepingSchemaDetailsAction, updateBookkeepingSchemaAction } from "src/redux/thunks/bookKeeping";
 import SchemaEditor from "../components/SchemaEditor";
 
 function UpdateSchema(props) {

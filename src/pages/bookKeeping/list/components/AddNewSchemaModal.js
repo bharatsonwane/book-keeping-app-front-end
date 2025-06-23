@@ -4,7 +4,7 @@ import React from "react";
 import { TextField, Button } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createBookkeepingSchemaByAIAction } from "src/thunks/bookKeeping";
+import { createBookkeepingSchemaByAIAction } from "src/redux/thunks/bookKeeping";
 
 function AddNewSchemaModal({
   open,

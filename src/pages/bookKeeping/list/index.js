@@ -9,7 +9,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { getBookkeepingSchemaAction } from "src/thunks/bookKeeping";
+import { getBookkeepingSchemaAction } from "src/redux/thunks/bookKeeping";
 import { useNavigate } from "react-router-dom";
 import AddNewSchemaModal from "./components/AddNewSchemaModal";
 import { Button } from "@mui/material";

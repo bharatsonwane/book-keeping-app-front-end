@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { createSlice } from "@reduxjs/toolkit";
-import { validateAllFormFieldAction } from "src/thunks/bookKeeping";
+import { validateAllFormFieldAction } from "src/redux/thunks/bookKeeping";
 
 const initState = {
   loading: false,

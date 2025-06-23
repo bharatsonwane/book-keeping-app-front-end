@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { createSlice } from "@reduxjs/toolkit";
-import { userLoginAction } from "src/thunks/auth";
+import { userLoginAction } from "src/redux/thunks/auth";
 
 const initState = {
   loading: false,

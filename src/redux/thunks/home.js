@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getAxios } from "../helper";
+import { getAxios } from "../../helper";
 export const FetchData = createAsyncThunk(
   "fetchData",
   async (model, thunkApi) => {

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   formFieldDataUpdateAction,
   formFieldValidationAction,
-} from "src/slice/bookKeeping";
+} from "src/redux/slice/bookKeeping";
 import { getValidationErrorForFieldWithZod } from "src/helper/zodValidationHelper";
 
 function SchemaFormFieldRender(props) {

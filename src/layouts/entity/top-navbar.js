@@ -7,9 +7,9 @@ import {
 } from "src/components/ui/popover";
 import { Button } from "src/components/ui/button";
 import { useDispatch } from "react-redux";
-import { logOutUser } from "src/slice/auth";
+import { logOutUser } from "src/redux/slice/auth";
 import { useNavigate } from "react-router-dom";
-import { resetEntities } from "src/slice/entities";
+import { resetEntities } from "src/redux/slice/entities";
 
 const TopNavbar = () => {
   const dispatch = useDispatch();

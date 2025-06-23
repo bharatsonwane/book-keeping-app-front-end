@@ -11,10 +11,10 @@ import {
   addBookkeepingEntryAction,
   getBookkeepingSchemaDetailsAction,
   validateAllFormFieldAction,
-} from "src/thunks/bookKeeping";
+} from "src/redux/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
-import { updateFormObject } from "src/slice/bookKeeping";
+import { updateFormObject } from "src/redux/slice/bookKeeping";
 import foodSchema from "src/helper/schema/foodSchema";
 
 const foodDetailSchema = {

@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 import apiSlice from "src/redux/api/index";
 import { transferErrorResponse } from "src/lib/transferResponse";
-import { setUiEntities } from "src/slice/entities";
+import { setUiEntities } from "src/redux/slice/entities";
 
 export const sidebarApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
