@@ -1,4 +1,10 @@
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 import _ from "lodash";
 import { InputColorWithLabel } from "src/components/inputComponents/InputColorWithLabel";
 import { InputDateTimePicker } from "src/components/inputComponents/InputDateTimePicker";
@@ -17,6 +23,42 @@ import {
 } from "src/helper/schemaHelper";
 import { HeadingWithButton } from "../uiComponents/HeadingWithButton";
 
+// Custom hook for field value and validation logic
+const useFieldData = (node, dataObject, formValidationObject, languageData) => {
+  return useMemo(() => {
+    const name = node.isMultilingual
+      ? `${node.dataMappingName}.${languageData.selectedLanguage}`
+      : node.dataMappingName;
+
+    const value = node.isMultilingual
+      ? _.get(
+          dataObject,
+          `${node.dataMappingName}.${languageData.selectedLanguage}`,
+          ""
+        )
+      : node.dataMappingName
+      ? _.get(dataObject, node.dataMappingName, "")
+      : dataObject;
+
+    const isAllTouched = formValidationObject?.isAllTouched;
+    const touched = formValidationObject?.touched;
+
+    const errorMessage = node.dataMappingName
+      ? _.get(
+          formValidationObject,
+          `errorMessage.${node.dataMappingName}`,
+          ""
+        ) || formValidationObject?.errorMessage?.[node.dataMappingName]
+      : "";
+
+    const isTouched = node.dataMappingName
+      ? _.get(formValidationObject, `touched[${node.dataMappingName}]`, false)
+      : false;
+
+    return { name, value, isAllTouched, touched, errorMessage, isTouched };
+  }, [node, dataObject, formValidationObject, languageData]);
+};
+
 function SchemaFieldRender(props) {
   const {
     node,
@@ -28,179 +70,96 @@ function SchemaFieldRender(props) {
     onClick = (e, node) => {},
   } = props;
 
-  const name = (() => {
-    if (node.isMultilingual) {
-      return `${node.dataMappingName}.${languageData.selectedLanguage}`;
-    }
-    return node.dataMappingName;
-  })();
+  const { name, value, isAllTouched, touched, errorMessage, isTouched } =
+    useFieldData(node, dataObject, formValidationObject, languageData);
 
-  const value = (() => {
-    if (node.isMultilingual) {
-      return _.get(
-        dataObject,
-        `${node.dataMappingName}.${languageData.selectedLanguage}`,
-        ""
+  const commonProps = {
+    key: `${node.dataMappingName}_${node.type}`,
+    label: node.label,
+    placeholder: node.placeholder,
+    tooltipText: node.tooltipText,
+    type: node.type,
+    name: node.dataMappingName,
+    readOnly: node.readOnly,
+    className: node.className,
+    isSmallScreen: node.isSmallScreen,
+    value,
+    isAllTouched,
+    touched,
+    errorMessage,
+    onBlur,
+    onChange,
+  };
+
+  const renderFieldByType = () => {
+    if (node.type === "color") {
+      return <InputColorWithLabel {...commonProps} />;
+    }
+
+    if (node.type === "date") {
+      return <InputDateTimePicker {...commonProps} />;
+    }
+
+    if (node.type === "switch") {
+      return <InputSwitchWithLable {...commonProps} />;
+    }
+
+    if (node.type === "text" || node.type === "number") {
+      return <InputTextWithLabel {...commonProps} />;
+    }
+
+    if (node.type === "textarea") {
+      return <InputTextareaWithLabel {...commonProps} />;
+    }
+
+    if (node.type === "select") {
+      return (
+        <InputSelectDropdown
+          {...commonProps}
+          loading={node.loading}
+          options={node.options}
+          isMultilingual={node.isMultilingual}
+        />
       );
-    } else if (node.dataMappingName) {
-      return _.get(dataObject, node.dataMappingName, "");
-    } else {
-      return dataObject;
     }
-  })();
 
-  const isAllTouched = formValidationObject?.isAllTouched;
-  const touched = formValidationObject?.touched;
+    if (node.type === "heading") {
+      return <Header label={node.label} />;
+    }
 
-  const errorMessage = node.dataMappingName
-    ? _.get(formValidationObject, `errorMessage.${node.dataMappingName}`, "") ||
-      formValidationObject?.errorMessage?.[node.dataMappingName]
-    : "";
+    if (node.type === "table") {
+      return <TableComponent node={node} value={value} />;
+    }
 
-  const isTouched = node.dataMappingName
-    ? _.get(formValidationObject, `touched[${node.dataMappingName}]`, false)
-    : false;
+    if (node.type === "button") {
+      return <Button node={node} onClick={onClick} />;
+    }
 
-  if (node.type === "color") {
-    return (
-      <InputColorWithLabel
-        key={`${node.dataMappingName}_${node.type}`}
-        label={node.label}
-        placeholder={node.placeholder}
-        tooltipText={node.tooltipText}
-        type={node.type}
-        name={node.dataMappingName}
-        readOnly={node.readOnly}
-        className={node.className}
-        isSmallScreen={node.isSmallScreen}
-        value={value}
-        isAllTouched={isAllTouched}
-        touched={touched}
-        errorMessage={errorMessage}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
-    );
-  } else if (node.type === "date") {
-    return (
-      <InputDateTimePicker
-        key={`${node.dataMappingName}_${node.type}`}
-        label={node.label}
-        tooltipText={node.tooltipText}
-        name={node.dataMappingName}
-        value={value}
-        isAllTouched={isAllTouched}
-        className={node.className}
-        isSmallScreen={node.isSmallScreen}
-        touched={touched}
-        errorMessage={errorMessage}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
-    );
-  } else if (node.type === "switch") {
-    return (
-      <InputSwitchWithLable
-        key={`${node.dataMappingName}_${node.type}`}
-        label={node.label}
-        placeholder={node.placeholder}
-        tooltipText={node.tooltipText}
-        type={node.type}
-        name={node.dataMappingName}
-        readOnly={node.readOnly}
-        className={node.className}
-        isSmallScreen={node.isSmallScreen}
-        value={value}
-        isAllTouched={isAllTouched}
-        touched={touched}
-        errorMessage={errorMessage}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
-    );
-  } else if (node.type === "text" || node.type === "number") {
-    return (
-      <InputTextWithLabel
-        key={`${node.dataMappingName}_${node.type}`}
-        label={node.label}
-        placeholder={node.placeholder}
-        tooltipText={node.tooltipText}
-        type={node.type}
-        name={node.dataMappingName}
-        readOnly={node.readOnly}
-        className={node.className}
-        isSmallScreen={node.isSmallScreen}
-        value={value}
-        isAllTouched={isAllTouched}
-        touched={touched}
-        errorMessage={errorMessage}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
-    );
-  } else if (node.type === "textarea") {
-    return (
-      <InputTextareaWithLabel
-        key={`${node.dataMappingName}_${node.type}`}
-        label={node.label}
-        placeholder={node.placeholder}
-        tooltipText={node.tooltipText}
-        type={node.type}
-        name={node.dataMappingName}
-        readOnly={node.readOnly}
-        className={node.className}
-        isSmallScreen={node.isSmallScreen}
-        value={value}
-        isAllTouched={isAllTouched}
-        touched={touched}
-        errorMessage={errorMessage}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
-    );
-  } else if (node.type === "select") {
-    return (
-      <InputSelectDropdown
-        key={`${node.dataMappingName}_${node.type}`}
-        loading={node.loading}
-        label={node.label}
-        placeholder={node.placeholder}
-        tooltipText={node.tooltipText}
-        type={node.type}
-        name={node.dataMappingName}
-        readOnly={node.readOnly}
-        className={node.className}
-        isSmallScreen={node.isSmallScreen}
-        value={value}
-        options={node.options}
-        isMultilingual={node.isMultilingual}
-        isAllTouched={isAllTouched}
-        touched={touched}
-        errorMessage={errorMessage}
-        onBlur={onBlur}
-        onChange={onChange}
-      />
-    );
-  } else if (node.type === "heading") {
-    return <Header label={node.label} />;
-  } else if (node.type === "table") {
-    return <TableComponent node={node} value={value} />;
-  } else if (node.type === "button") {
-    return <Button node={node} onClick={onClick} />;
-  } else if (node.type === "headingWithButton") {
-    return <HeadingWithButton node={node} onClick={onClick} />;
-  }
+    if (node.type === "headingWithButton") {
+      return <HeadingWithButton node={node} onClick={onClick} />;
+    }
 
-  return <></>;
+    return null;
+  };
+
+  return renderFieldByType();
 }
 
-const RenderMultilingualField = ({
-  node,
-  prevNode,
-  languageData,
-  handleChangeLanguage = () => {},
-}) => {
-  if (node?.isMultilingual && (!prevNode || !prevNode?.isMultilingual)) {
+const RenderMultilingualField = React.memo(function RenderMultilingualField(
+  props
+) {
+  const {
+    node,
+    prevNode,
+    languageData,
+    handleChangeLanguage = () => {},
+  } = props;
+
+  const isMultilingualStart =
+    node?.isMultilingual && (!prevNode || !prevNode?.isMultilingual);
+  const isMultilingualEnd = !node?.isMultilingual && prevNode?.isMultilingual;
+
+  if (isMultilingualStart) {
     return (
       <div
         key={`multilingualTabStart_${node.dataMappingName}`}
@@ -211,55 +170,43 @@ const RenderMultilingualField = ({
         <div id="navbarProductProfile">
           <ul className="nav nav-pills">
             {languageData?.languageList?.map((item, index) => (
-              <React.Fragment key={index}>
-                <li className="nav-item">
-                  <a
-                    className="nav-link fw-normal"
-                    role="button"
-                    data-tabselect={
-                      item.value == languageData?.selectedLanguage
-                    }
-                    onClick={() => handleChangeLanguage(item.value)}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              </React.Fragment>
+              <li className="nav-item" key={index}>
+                <a
+                  className="nav-link fw-normal"
+                  role="button"
+                  data-tabselect={item.value === languageData?.selectedLanguage}
+                  onClick={() => handleChangeLanguage(item.value)}
+                >
+                  {item.label}
+                </a>
+              </li>
             ))}
           </ul>
         </div>
       </div>
     );
-  } else if (!node?.isMultilingual && prevNode?.isMultilingual) {
+  }
+
+  if (isMultilingualEnd) {
     return (
       <div
         key={`multilingualTabEnd_${node.dataMappingName}`}
         style={{ marginBottom: "16px" }}
-      ></div>
+      />
     );
   }
 
-  return <></>;
-};
+  return null;
+});
 
-const SchemaTabRenderer = ({
-  node,
-  prevNode,
-  sqlQueryList = [],
-  languageData = {},
-  dataObject = {},
-  formValidationObject = {},
-  handleChangeLanguage = () => {},
-  handleInputChange = () => {},
-  handleBlurChange = () => {},
-  handleClickChange = () => {},
-}) => {
+// Custom hook for tab management
+const useTabManagement = (node) => {
   const [selectedTabLabel, setSelectedTabLabel] = useState("");
 
   useEffect(() => {
     const tabLabel = getInitialTabLabel(node);
     setSelectedTabLabel(tabLabel);
-  }, []);
+  }, [node]);
 
   const { tabData, parentTabLabel } = useMemo(() => {
     if (selectedTabLabel) {
@@ -270,70 +217,105 @@ const SchemaTabRenderer = ({
       return { tabData, parentTabLabel };
     }
     return { tabData: null, parentTabLabel: null };
-  }, [selectedTabLabel]);
+  }, [selectedTabLabel, node]);
+
+  return { selectedTabLabel, setSelectedTabLabel, tabData, parentTabLabel };
+};
+
+// Component for rendering tab navigation
+const TabNavigation = React.memo(function TabNavigation({
+  node,
+  selectedTabLabel,
+  setSelectedTabLabel,
+  parentTabLabel,
+}) {
+  const handleTabClick = useCallback(
+    (tabLabel) => {
+      setSelectedTabLabel(tabLabel);
+    },
+    [setSelectedTabLabel]
+  );
+
+  return (
+    <div id="navbarProductProfile" className="product-profile-navbar">
+      <ul className="nav nav-pills">
+        {node?.children?.map((tabNode, index) => (
+          <li className="nav-item" key={index}>
+            {tabNode.type === "parentTab" ? (
+              <div className="dropdown">
+                <button
+                  className="btn nav-link dropdown-toggle"
+                  type="button"
+                  id={`dropdownMenuButton_${index}`}
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  data-tabselect={
+                    selectedTabLabel === tabNode.label ||
+                    parentTabLabel === tabNode.label
+                  }
+                >
+                  {tabNode.label}
+                </button>
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby={`dropdownMenuButton_${index}`}
+                >
+                  {tabNode?.children?.map((childTabNode, childIndex) => (
+                    <li key={`tab_${childTabNode.label}${childIndex}`}>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => handleTabClick(childTabNode.label)}
+                        data-tabselect={selectedTabLabel === childTabNode.label}
+                      >
+                        {childTabNode.label}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <a
+                key={`tab_${tabNode.label}${index}`}
+                className="nav-link"
+                role="button"
+                data-tabselect={selectedTabLabel === tabNode.label}
+                onClick={() => handleTabClick(tabNode.label)}
+              >
+                {tabNode.label}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+});
+
+// Component for rendering tab content
+const SchemaTabRenderer = React.memo(function SchemaTabRenderer({
+  node,
+  prevNode,
+  sqlQueryList = [],
+  languageData = {},
+  dataObject = {},
+  formValidationObject = {},
+  handleChangeLanguage = () => {},
+  handleInputChange = () => {},
+  handleBlurChange = () => {},
+  handleClickChange = () => {},
+}) {
+  const { selectedTabLabel, setSelectedTabLabel, tabData, parentTabLabel } =
+    useTabManagement(node);
 
   return (
     <>
-      <div id="navbarProductProfile" className="product-profile-navbar">
-        <ul className="nav nav-pills">
-          {node?.children?.map((tabNode, index) => {
-            return (
-              <li className="nav-item" key={index}>
-                {tabNode.type === "parentTab" ? (
-                  <>
-                    <div className="dropdown">
-                      <button
-                        className={`btn nav-link dropdown-toggle`}
-                        type="button"
-                        id={`dropdownMenuButton_${index}`}
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        data-tabselect={
-                          selectedTabLabel === tabNode.label ||
-                          parentTabLabel === tabNode.label
-                        }
-                      >
-                        {tabNode.label}
-                      </button>
-                      <ul
-                        className="dropdown-menu"
-                        aria-labelledby={`dropdownMenuButton_${index}`}
-                      >
-                        {tabNode?.children?.map((childTabNode, childIndex) => (
-                          <li key={`tab_${childTabNode.label}${childIndex}`}>
-                            <button
-                              className="dropdown-item"
-                              type="button"
-                              onClick={() =>
-                                setSelectedTabLabel(childTabNode.label)
-                              }
-                              data-tabselect={
-                                selectedTabLabel === childTabNode.label
-                              }
-                            >
-                              {childTabNode.label}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </>
-                ) : (
-                  <a
-                    key={`tab_${tabNode.label}${index}`}
-                    className="nav-link"
-                    role="button"
-                    data-tabselect={selectedTabLabel === tabNode.label}
-                    onClick={() => setSelectedTabLabel(tabNode.label)}
-                  >
-                    {tabNode.label}
-                  </a>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <TabNavigation
+        node={node}
+        selectedTabLabel={selectedTabLabel}
+        setSelectedTabLabel={setSelectedTabLabel}
+        parentTabLabel={parentTabLabel}
+      />
 
       {tabData?.type && (
         <SchemaComponentRenderer
@@ -353,7 +335,71 @@ const SchemaTabRenderer = ({
       )}
     </>
   );
-};
+});
+
+// Component for rendering section content
+const SectionRenderer = React.memo(function SectionRenderer({
+  node,
+  children,
+  sqlQueryList,
+  languageData,
+  dataObject,
+  formValidationObject,
+  handleChangeLanguage,
+  handleInputChange,
+  handleBlurChange,
+  handleClickChange,
+}) {
+  return (
+    <div
+      key={`${node.label}_${node.type}`}
+      style={{
+        width: "100%",
+        flex: "0 0 100%",
+        marginTop: 10,
+        textAlign: "left",
+      }}
+    >
+      <div style={{ fontSize: 16, fontWeight: "600" }}>{node.label}</div>
+      <div className="row">{children}</div>
+    </div>
+  );
+});
+
+// Component for rendering child nodes recursively
+const ChildNodesRenderer = React.memo(function ChildNodesRenderer({
+  children,
+  sqlQueryList,
+  languageData,
+  dataObject,
+  formValidationObject,
+  handleChangeLanguage,
+  handleInputChange,
+  handleBlurChange,
+  handleClickChange,
+  isMultilingual = false,
+}) {
+  return (
+    <Fragment>
+      {children?.map((childNode, index, list) => (
+        <SchemaComponentRenderer
+          key={`${childNode.type}_${childNode.label}_${index}`}
+          sqlQueryList={sqlQueryList}
+          node={childNode}
+          prevNode={index > 0 ? list[index - 1] : null}
+          languageData={languageData}
+          dataObject={dataObject}
+          formValidationObject={formValidationObject}
+          isMultilingual={isMultilingual}
+          handleChangeLanguage={handleChangeLanguage}
+          handleInputChange={handleInputChange}
+          handleBlurChange={handleBlurChange}
+          handleClickChange={handleClickChange}
+        />
+      ))}
+    </Fragment>
+  );
+});
 
 export function SchemaComponentRenderer({
   sqlQueryList = [],
@@ -367,9 +413,108 @@ export function SchemaComponentRenderer({
   handleBlurChange = () => {},
   handleClickChange = (e, node) => {},
 }) {
-  const tabList = node?.children?.filter(
-    (child) => child.type === "tab" || child.type === "parentTab"
+  const tabList = useMemo(
+    () =>
+      node?.children?.filter(
+        (child) => child.type === "tab" || child.type === "parentTab"
+      ),
+    [node?.children]
   );
+
+  const renderContent = () => {
+    if (tabList && tabList.length > 0) {
+      return (
+        <SchemaTabRenderer
+          key={`tabField_${node.label}`}
+          sqlQueryList={sqlQueryList}
+          node={node}
+          prevNode={prevNode}
+          dataObject={dataObject}
+          formValidationObject={formValidationObject}
+          handleChangeLanguage={handleChangeLanguage}
+          handleInputChange={handleInputChange}
+          handleBlurChange={handleBlurChange}
+          handleClickChange={handleClickChange}
+        />
+      );
+    }
+
+    if (node.type === "schema") {
+      return (
+        <ChildNodesRenderer
+          children={node.children}
+          sqlQueryList={sqlQueryList}
+          languageData={languageData}
+          dataObject={dataObject}
+          formValidationObject={formValidationObject}
+          handleChangeLanguage={handleChangeLanguage}
+          handleInputChange={handleInputChange}
+          handleBlurChange={handleBlurChange}
+          handleClickChange={handleClickChange}
+        />
+      );
+    }
+
+    if (node.type === "tab") {
+      return (
+        <ChildNodesRenderer
+          children={node.children}
+          sqlQueryList={sqlQueryList}
+          languageData={languageData}
+          dataObject={dataObject}
+          formValidationObject={formValidationObject}
+          isMultilingual={false}
+          handleChangeLanguage={handleChangeLanguage}
+          handleInputChange={handleInputChange}
+          handleBlurChange={handleBlurChange}
+          handleClickChange={handleClickChange}
+        />
+      );
+    }
+
+    if (node.type === "section") {
+      return (
+        <SectionRenderer
+          node={node}
+          sqlQueryList={sqlQueryList}
+          languageData={languageData}
+          dataObject={dataObject}
+          formValidationObject={formValidationObject}
+          handleChangeLanguage={handleChangeLanguage}
+          handleInputChange={handleInputChange}
+          handleBlurChange={handleBlurChange}
+          handleClickChange={handleClickChange}
+        >
+          <ChildNodesRenderer
+            children={node.children}
+            sqlQueryList={sqlQueryList}
+            languageData={languageData}
+            dataObject={dataObject}
+            formValidationObject={formValidationObject}
+            isMultilingual={false}
+            handleChangeLanguage={handleChangeLanguage}
+            handleInputChange={handleInputChange}
+            handleBlurChange={handleBlurChange}
+            handleClickChange={handleClickChange}
+          />
+        </SectionRenderer>
+      );
+    }
+
+    return (
+      <SchemaFieldRender
+        key={`${node?.type}_${node.label}`}
+        sqlQueryList={sqlQueryList}
+        node={node}
+        dataObject={dataObject}
+        formValidationObject={formValidationObject}
+        languageData={languageData}
+        onChange={handleInputChange}
+        onBlur={(e) => handleBlurChange(e, node)}
+        onClick={(e, node) => handleClickChange(e, node)}
+      />
+    );
+  };
 
   return (
     <Fragment>
@@ -385,99 +530,7 @@ export function SchemaComponentRenderer({
           />
         </ErrorBoundary>
 
-        {tabList && tabList?.length > 0 ? (
-          <SchemaTabRenderer
-            key={`tabField_${node.label}`}
-            sqlQueryList={sqlQueryList}
-            node={node}
-            prevNode={prevNode}
-            dataObject={dataObject}
-            formValidationObject={formValidationObject}
-            handleChangeLanguage={handleChangeLanguage}
-            handleInputChange={handleInputChange}
-            handleBlurChange={handleBlurChange}
-            handleClickChange={handleClickChange}
-          />
-        ) : node.type === "schema" ? (
-          <Fragment>
-            {node.children?.map((childNode, index, list) => (
-              <SchemaComponentRenderer
-                key={`${childNode.type}_${childNode.label}_${index}`}
-                sqlQueryList={sqlQueryList}
-                node={childNode}
-                prevNode={index > 0 ? list[index - 1] : null}
-                dataObject={dataObject}
-                formValidationObject={formValidationObject}
-                handleChangeLanguage={handleChangeLanguage}
-                handleInputChange={handleInputChange}
-                handleBlurChange={handleBlurChange}
-                handleClickChange={handleClickChange}
-              />
-            ))}
-          </Fragment>
-        ) : node?.type === "tab" ? (
-          <Fragment>
-            {node.children?.map((childNode, index, list) => (
-              <SchemaComponentRenderer
-                key={`${childNode.type}_${childNode.label}_${index}`}
-                sqlQueryList={sqlQueryList}
-                node={childNode}
-                prevNode={index > 0 ? list[index - 1] : null}
-                languageData={languageData}
-                dataObject={dataObject}
-                formValidationObject={formValidationObject}
-                isMultilingual={false}
-                handleChangeLanguage={handleChangeLanguage}
-                handleInputChange={handleInputChange}
-                handleBlurChange={handleBlurChange}
-                handleClickChange={handleClickChange}
-              />
-            ))}
-          </Fragment>
-        ) : node?.type === "section" ? (
-          <div
-            key={`${node.label}_${node.type}`}
-            style={{
-              width: "100%",
-              flex: "0 0 100%",
-              marginTop: 10,
-              textAlign: "left",
-            }}
-          >
-            <div style={{ fontSize: 16, fontWeight: "600" }}>{node.label}</div>
-            <div className="row">
-              {node?.children?.map((childNode, index, list) => (
-                <SchemaComponentRenderer
-                  key={`${childNode.type}_${childNode.label}_${index}`}
-                  sqlQueryList={sqlQueryList}
-                  node={childNode}
-                  prevNode={index > 0 ? list[index - 1] : null}
-                  languageData={languageData}
-                  dataObject={dataObject}
-                  formValidationObject={formValidationObject}
-                  isMultilingual={false}
-                  handleChangeLanguage={handleChangeLanguage}
-                  handleInputChange={handleInputChange}
-                  handleBlurChange={handleBlurChange}
-                  handleClickChange={handleClickChange}
-                />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <ErrorBoundary>
-            <SchemaFieldRender
-              key={`${node?.type}_${node.label}`}
-              sqlQueryList={sqlQueryList}
-              node={node}
-              dataObject={dataObject}
-              formValidationObject={formValidationObject}
-              onChange={handleInputChange}
-              onBlur={(e) => handleBlurChange(e, node)}
-              onClick={(e, node) => handleClickChange(e, node)}
-            />
-          </ErrorBoundary>
-        )}
+        <ErrorBoundary>{renderContent()}</ErrorBoundary>
       </ErrorBoundary>
     </Fragment>
   );
