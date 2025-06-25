@@ -13,7 +13,7 @@ const Home = () => {
           path={`/`}
           element={<Navigate replace="/" to={`${Location.pathname}/list/id`} />}
         ></Route>
-        <Route path={"list/:id"} element={<HomeList />}></Route>
+        <Route path={"list/:schemaName"} element={<HomeList />}></Route>
         <Route path={"list/entity-details"} element={<EntityDetails />}></Route>
       </Routes>
     </UiEntitesLayout>

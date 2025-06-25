@@ -108,7 +108,6 @@ export const getBookkeepingColumnsForSchemaAction = createAsyncThunk(
   "bookkeeping/getBookkeepingColumnsForSchemaAction",
   async (model, thunkApi) => {
     try {
-      console.log("model", model);
       let res = await getAxios().get(`schema/${model}/columns`);
 
       const responseData = res.data;
@@ -124,7 +123,6 @@ export const getBookkeepingEntryForSchemaAction = createAsyncThunk(
   "bookkeeping/getBookkeepingEntryForSchemaAction",
   async (model, thunkApi) => {
     try {
-      console.log("model", model);
       let res = await getAxios().get(`/schema/${model}/entries`);
 
       const responseData = res.data;

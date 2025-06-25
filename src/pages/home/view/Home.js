@@ -2,10 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import UiEntitesLayout from "src/layouts/entity";
 import SchemaMainRenderer from "src/pages/bookKeeping/form/SchemaMainRenderer";
-import {
-  useGetDataByIdQuery,
-  useGetSchemaByIdQuery,
-} from "../../../redux/api/entitties.api";
+import { useGetDataByIdQuery, useGetSchemaByNameQuery } from "../../../redux/api/entitties.api";
 import SchemaComponentRenderer from "src/components/schemaRender/SchemaComponentRenderer";
 
 const foodListSchema = {
@@ -23,17 +20,17 @@ const foodListSchema = {
     {
       type: "addButton",
       label: "Add User's",
-      schemaId: "foodDetailSchema",
+      schemaName: "foodDetailSchema",
       action: {
         onClick: "navigate",
         navigationPath: "/need-to-add-navigation-path",
-      }
+      },
     },
     {
       type: "table",
       onRowClick: {
         navigationPath: "/.../.../..../..",
-        schemaId: "",
+        schemaName: "",
       },
       children: [
         {
@@ -108,22 +105,24 @@ const foodListData = [
 const Home = () => {
   const params = useParams();
 
-  const { data } = useGetSchemaByIdQuery(
-    { id: params.id },
-    { skip: !params.id }
+  const { data: schemaInfo } = useGetSchemaByNameQuery(
+    { name: params.schemaName },
+    { skip: !params.schemaName }
+  );
+  const schemaData = schemaInfo?.data || {}
+
+
+  const sqlQueryList = schemaData?.sqlQueryList || [];
+  const defaultQueryName = schemaData?.defaultQueryName || "";
+  const defaultQueryObject = sqlQueryList.find((ele) => ele.queryName === defaultQueryName);
+
+  const { data: nData } = useGetDataByIdQuery(
+    { query: defaultQueryObject?.query },
+    { skip: !defaultQueryObject?.query }
   );
 
-  const sqlQueryList = data?.data?.schema?.sqlQueryList || [];
-  const defaultQueryName = data?.data?.schema?.defaultQueryName || "";
-  const query = sqlQueryList.find((ele) => ele.queryName === defaultQueryName);
+  console.log("nData", nData)
 
-  console.log("bharatQuery", query);
-
-  // const { data: nData } = useGetDataByIdQuery(
-  //   { query: query },
-  //   { skip: !query }
-  // );
-  const nData = foodListData;
 
   return (
     <div
@@ -131,9 +130,9 @@ const Home = () => {
       style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
     >
       <SchemaComponentRenderer
-        node={foodListSchema}
-        sqlQueryList={data?.data?.schema?.sqlQueryList || []}
-        dataObject={nData}
+        node={schemaData}
+        sqlQueryList={schemaData?.sqlQueryList || []}
+        dataObject={nData || {}}
         formValidationObject={{}}
       />
     </div>

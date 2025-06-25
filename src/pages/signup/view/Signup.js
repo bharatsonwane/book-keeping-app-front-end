@@ -31,7 +31,6 @@ const Signup = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log("data", data);
     const response = await signUpFn(data);
     if (response.data) {
       toast.success(response.data.msg);

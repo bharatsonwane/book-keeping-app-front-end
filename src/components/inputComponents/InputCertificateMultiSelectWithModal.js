@@ -49,7 +49,7 @@ export function InputCertificateMultiSelectWithModal(props) {
   //     setAllCertificateList(certificates)
   //     filteredDropdownArray(certificates)
   //   } catch (error) {
-  //     console.log(error)
+  //     console.error(error)
   //   }
   // }
 

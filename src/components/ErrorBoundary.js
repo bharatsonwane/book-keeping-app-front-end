@@ -16,7 +16,7 @@ import Chip from '@mui/material/Chip';
     }
 
     componentDidCatch(error,errorInfo){
-        console.log('error......',error,errorInfo)
+        console.error('error......',error,errorInfo)
     }
 
     render(){

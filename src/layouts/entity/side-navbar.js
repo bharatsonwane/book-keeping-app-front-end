@@ -39,7 +39,7 @@ const SideNavbar = () => {
                 selectedEntity === ele.label && "bg-muted text-primary"
               )}
               onClick={() => {
-                navigate(`/app/home/list/${ele.schemaId}`);
+                navigate(`/app/home/list/${ele.schemaName}`);
                 setSelectedEntity(ele.label);
               }}
             >

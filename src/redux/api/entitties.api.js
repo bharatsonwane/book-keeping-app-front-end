@@ -5,9 +5,9 @@ import { setUiEntities } from "src/redux/slice/entities";
 
 export const entitiesAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getSchemaById: builder.query({
+    getSchemaByName: builder.query({
       query: (data) => ({
-        url: "/ui/get-schema-by-id",
+        url: "/ui/get-schema-by-name",
         method: "POST",
         body: data,
       }),
@@ -25,8 +25,8 @@ export const entitiesAPI = apiSlice.injectEndpoints({
 });
 
 export const {
-  useGetSchemaByIdQuery,
-  useLazyGetSchemaByIdQuery,
+  useGetSchemaByNameQuery,
+  useLazyGetSchemaByNameQuery,
   useGetDataByIdQuery,
   useLazyGetDataByIdQuery,
 } = entitiesAPI;

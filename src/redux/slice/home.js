@@ -13,14 +13,12 @@ export const HomeSlice = createSlice({
   extraReducers: {
     [FetchData.pending]: (state, action) => {
       state.loading = true;
-      console.log("loading");
     },
     [FetchData.fulfilled]: (state, action) => {
-      console.log("action", action);
       state = { ...state, loading: false, data: action.payload };
     },
     [FetchData.rejected]: (state, action) => {
-      console.log("action Error", action);
+      console.error("action Error", action);
     },
   },
 });

@@ -9,7 +9,6 @@ export const uiEntities = createSlice({
   initialState,
   reducers: {
     setUiEntities: (state, action) => {
-      console.log("action", action.payload);
       state.uiEntities = action.payload;
     },
     resetEntities: (state, action) => {

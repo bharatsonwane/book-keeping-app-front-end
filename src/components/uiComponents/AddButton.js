@@ -21,7 +21,7 @@ AddButton.defaultProps = {
 export function AddButton(props) {
   const { node } = props;
 
-  const { label, onClick = () => {}, schemaId } = node;
+  const { label, onClick = () => {}, } = node;
 
   console.log("bharatProps", props);
 
