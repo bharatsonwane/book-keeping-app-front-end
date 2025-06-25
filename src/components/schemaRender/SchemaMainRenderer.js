@@ -4,13 +4,12 @@ import { getInitialSchemaValueObject } from "src/helper/schemaHelper";
 import { useDispatch } from "react-redux";
 import { getSchemaByNameAction } from "src/redux/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "@mui/material";
 import { SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
 import {
   getValidationErrorForFieldWithZod,
   getValidationErrorForSchemaWithZod,
 } from "src/helper/zodValidationHelper";
-import {foodDetailSchema} from "src/helper/schema/foodSchema";
+import { foodDetailSchema } from "src/helper/schema/foodSchema";
 
 function SchemaMainRenderer() {
   const params = useParams();
@@ -127,31 +126,12 @@ function SchemaMainRenderer() {
 
   return (
     <div
-      className="product-profile detail-tab col-xl-9 col-xxl-8 col-sm-12"
+      className="col-xl-9 col-xxl-8 col-sm-12"
       style={{ width: "100%", height: "100%" }}
     >
-      <div
-        className={`p-2 container-fluid d-flex flex-row justify-content-between bg-primary text-white`}
-        style={{ alignItems: "center" }}
-      >
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            handleSubmit();
-          }}
-          sx={{ background: "white", color: "black", height: "40px" }}
-        >
-          Add Entry
-        </Button>
-        <h4>Add New Entry</h4>
-        <div className="w-20"></div>
-      </div>
-
       {schema && formDataObject && (
         <React.Fragment>
           <div
-            className="product-profile--content"
             style={{
               minHeight: 300,
               maxHeight: "calc(100vh - 250px)",

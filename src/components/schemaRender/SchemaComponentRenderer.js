@@ -15,6 +15,7 @@ import {
   getInitialTabLabel,
   getTabDataAndParentTabLabelByName,
 } from "src/helper/schemaHelper";
+import { HeadingWithButton } from "../uiComponents/HeadingWithButton";
 
 function SchemaFieldRender(props) {
   const {
@@ -186,6 +187,8 @@ function SchemaFieldRender(props) {
     return <TableComponent node={node} value={value} />;
   } else if (node.type === "button") {
     return <Button node={node} onClick={onClick} />;
+  } else if (node.type === "headingWithButton") {
+    return <HeadingWithButton node={node} onClick={onClick} />;
   }
 
   return <></>;
