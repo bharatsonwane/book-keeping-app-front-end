@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetDataByIdQuery,
@@ -21,15 +21,20 @@ const Home = () => {
     (ele) => ele.queryName === defaultQueryName
   );
 
-  const { data: nData } = useGetDataByIdQuery(
+  const { data: _queryData } = useGetDataByIdQuery(
     { query: defaultQueryObject?.query },
     { skip: !defaultQueryObject?.query }
   );
 
+  const queryData = useMemo(() => {
+    if (!defaultQueryObject?.query) return {};
+    return _queryData?.data || {};
+  }, [_queryData, defaultQueryObject?.query]);
+
   const handleClick = (e, node) => {
-    console.log("bharatE", e)
-    console.log("bharatNode", node)
-  }
+    console.log("bharatE", e);
+    console.log("bharatNode", node);
+  };
 
   return (
     <div
@@ -39,7 +44,7 @@ const Home = () => {
       <SchemaComponentRenderer
         node={schemaData}
         sqlQueryList={schemaData?.sqlQueryList || []}
-        dataObject={nData?.data || {}}
+        dataObject={queryData}
         formValidationObject={{}}
         handleClickChange={handleClick}
       />
