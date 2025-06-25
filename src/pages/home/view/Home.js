@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetDataByIdQuery,
   useGetSchemaByNameQuery,
@@ -8,6 +8,7 @@ import SchemaComponentRenderer from "src/components/schemaRender/SchemaComponent
 
 const Home = () => {
   const params = useParams();
+  const navigate = useNavigate();
 
   const { data: schemaInfo } = useGetSchemaByNameQuery(
     { name: params.schemaName },
@@ -32,8 +33,19 @@ const Home = () => {
   }, [_queryData, defaultQueryObject?.query]);
 
   const handleClick = (e, node) => {
-    console.log("bharatE", e);
-    console.log("bharatNode", node);
+    const onClick = node.onClick;
+    if (onClick && onClick.navigationPath) {
+      let path = onClick.navigationPath;
+
+      Object.keys(onClick).forEach((key) => {
+        if (key !== "navigationPath") {
+          path = path.replace(`:${key}`, onClick[key]);
+        }
+      });
+
+      // Now navigate to the resolved path
+      navigate(path);
+    }
   };
 
   return (

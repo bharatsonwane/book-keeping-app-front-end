@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { IoAddCircleOutline } from "react-icons/io5";
 
-// AddButton.propTypes = {
+// Button.propTypes = {
 //     /** Give a name to your button */
 //     buttontext: PropTypes.string,
 //     /**
@@ -11,14 +11,14 @@ import { IoAddCircleOutline } from "react-icons/io5";
 //     // onClick: PropTypes.event,
 // };
 
-AddButton.defaultProps = {
+Button.defaultProps = {
   buttontext: "Button",
   onClick: () => {
     alert("This is on click");
   },
 };
 
-export function AddButton(props) {
+export function Button(props) {
   const { node, onClick = (e, node) => {} } = props;
 
   const { label } = node;
@@ -35,17 +35,6 @@ export function AddButton(props) {
         onClick(e, node);
       }}
     >
-      <IoAddCircleOutline
-        style={{
-          marginTop: "0px",
-          marginRight: "0.3125rem",
-          alignSelf: "center",
-          cursor: "pointer",
-          // color: "rgb(150, 165, 175)",
-          color: "rgb(108, 117, 125)",
-        }}
-        size={13}
-      ></IoAddCircleOutline>
       <span>
         <button
           type="button"

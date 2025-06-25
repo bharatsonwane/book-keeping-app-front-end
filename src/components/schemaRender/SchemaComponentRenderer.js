@@ -8,7 +8,8 @@ import { InputTextareaWithLabel } from "src/components/inputComponents/InputText
 import { InputTextWithLabel } from "src/components/inputComponents/InputTextWithLabel";
 import Header from "../uiComponents/header";
 import TableComponent from "../uiComponents/tableComponent";
-import { AddButton } from "../uiComponents/AddButton";
+import { Button } from "../uiComponents/Button";
+import ErrorBoundary from "../ErrorBoundary";
 
 function SchemaFieldRender(props) {
   const {
@@ -178,8 +179,8 @@ function SchemaFieldRender(props) {
     return <Header label={node.label} />;
   } else if (node.type === "table") {
     return <TableComponent node={node} value={value} />;
-  } else if (node.type === "addButton") {
-    return <AddButton node={node} onClick={onClick} />;
+  } else if (node.type === "button") {
+    return <Button node={node} onClick={onClick} />;
   }
 
   return <></>;
@@ -247,64 +248,38 @@ function SchemaComponentRenderer({
 }) {
   return (
     <Fragment>
-      <RenderMultilingualField
-        key={`multilingualTab_${node.dataMappingName}`}
-        sqlQueryList={sqlQueryList}
-        node={node}
-        prevNode={prevNode}
-        languageData={languageData}
-        handleChangeLanguage={handleChangeLanguage}
-      />
+      <ErrorBoundary>
+        <ErrorBoundary>
+          <RenderMultilingualField
+            key={`multilingualTab_${node?.dataMappingName}`}
+            sqlQueryList={sqlQueryList}
+            node={node}
+            prevNode={prevNode}
+            languageData={languageData}
+            handleChangeLanguage={handleChangeLanguage}
+          />
+        </ErrorBoundary>
 
-      {node.type === "schema" ? (
-        <Fragment>
-          {node.children?.map((childNode, index, list) => (
-            <SchemaComponentRenderer
-              key={`${childNode.type}_${childNode.label}_${index}`}
-              sqlQueryList={sqlQueryList}
-              node={childNode}
-              prevNode={index > 0 ? list[index - 1] : null}
-              dataObject={dataObject}
-              formValidationObject={formValidationObject}
-              handleChangeLanguage={handleChangeLanguage}
-              handleInputChange={handleInputChange}
-              handleBlurChange={handleBlurChange}
-              handleClickChange={handleClickChange}
-            />
-          ))}
-        </Fragment>
-      ) : node.type === "tab" ? (
-        <Fragment>
-          {node.children?.map((childNode, index, list) => (
-            <SchemaComponentRenderer
-              key={`${childNode.type}_${childNode.label}_${index}`}
-              sqlQueryList={sqlQueryList}
-              node={childNode}
-              prevNode={index > 0 ? list[index - 1] : null}
-              languageData={languageData}
-              dataObject={dataObject}
-              formValidationObject={formValidationObject}
-              isMultilingual={false}
-              handleChangeLanguage={handleChangeLanguage}
-              handleInputChange={handleInputChange}
-              handleBlurChange={handleBlurChange}
-              handleClickChange={handleClickChange}
-            />
-          ))}
-        </Fragment>
-      ) : node.type === "section" ? (
-        <div
-          key={`${node.label}_${node.type}`}
-          style={{
-            width: "100%",
-            flex: "0 0 100%",
-            marginTop: 10,
-            textAlign: "left",
-          }}
-        >
-          <div style={{ fontSize: 16, fontWeight: "600" }}>{node.label}</div>
-          <div className="row">
-            {node.children.map((childNode, index, list) => (
+        {node.type === "schema" ? (
+          <Fragment>
+            {node.children?.map((childNode, index, list) => (
+              <SchemaComponentRenderer
+                key={`${childNode.type}_${childNode.label}_${index}`}
+                sqlQueryList={sqlQueryList}
+                node={childNode}
+                prevNode={index > 0 ? list[index - 1] : null}
+                dataObject={dataObject}
+                formValidationObject={formValidationObject}
+                handleChangeLanguage={handleChangeLanguage}
+                handleInputChange={handleInputChange}
+                handleBlurChange={handleBlurChange}
+                handleClickChange={handleClickChange}
+              />
+            ))}
+          </Fragment>
+        ) : node?.type === "tab" ? (
+          <Fragment>
+            {node.children?.map((childNode, index, list) => (
               <SchemaComponentRenderer
                 key={`${childNode.type}_${childNode.label}_${index}`}
                 sqlQueryList={sqlQueryList}
@@ -320,20 +295,52 @@ function SchemaComponentRenderer({
                 handleClickChange={handleClickChange}
               />
             ))}
+          </Fragment>
+        ) : node?.type === "section" ? (
+          <div
+            key={`${node.label}_${node.type}`}
+            style={{
+              width: "100%",
+              flex: "0 0 100%",
+              marginTop: 10,
+              textAlign: "left",
+            }}
+          >
+            <div style={{ fontSize: 16, fontWeight: "600" }}>{node.label}</div>
+            <div className="row">
+              {node?.children?.map((childNode, index, list) => (
+                <SchemaComponentRenderer
+                  key={`${childNode.type}_${childNode.label}_${index}`}
+                  sqlQueryList={sqlQueryList}
+                  node={childNode}
+                  prevNode={index > 0 ? list[index - 1] : null}
+                  languageData={languageData}
+                  dataObject={dataObject}
+                  formValidationObject={formValidationObject}
+                  isMultilingual={false}
+                  handleChangeLanguage={handleChangeLanguage}
+                  handleInputChange={handleInputChange}
+                  handleBlurChange={handleBlurChange}
+                  handleClickChange={handleClickChange}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      ) : (
-        <SchemaFieldRender
-          key={`${node.type}_${node.label}`}
-          sqlQueryList={sqlQueryList}
-          node={node}
-          dataObject={dataObject}
-          formValidationObject={formValidationObject}
-          onChange={handleInputChange}
-          onBlur={(e) => handleBlurChange(e, node)}
-          onClick={(e, node) => handleClickChange(e, node)}
-        />
-      )}
+        ) : (
+          <ErrorBoundary>
+            <SchemaFieldRender
+              key={`${node?.type}_${node.label}`}
+              sqlQueryList={sqlQueryList}
+              node={node}
+              dataObject={dataObject}
+              formValidationObject={formValidationObject}
+              onChange={handleInputChange}
+              onBlur={(e) => handleBlurChange(e, node)}
+              onClick={(e, node) => handleClickChange(e, node)}
+            />
+          </ErrorBoundary>
+        )}
+      </ErrorBoundary>
     </Fragment>
   );
 }

@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import HomeList from "./view/Home";
-import EntityDetails from "./view/entity-details";
 import UiEntitesLayout from "src/layouts/entity";
+import SchemaMainRenderer from "../bookKeeping/form/SchemaMainRenderer";
 
 const Home = () => {
   const Location = useLocation();
@@ -14,7 +14,9 @@ const Home = () => {
           element={<Navigate replace="/" to={`${Location.pathname}/list/:schemaName`} />}
         ></Route>
         <Route path={"list/:schemaName"} element={<HomeList />}></Route>
-        <Route path={"list/entity-details"} element={<EntityDetails />}></Route>
+        <Route path={"create/:schemaName"} element={<SchemaMainRenderer />}></Route>
+        <Route path={"update/:schemaName/:id"} element={<SchemaMainRenderer />}></Route>
+        <Route path={"view/:schemaName/:id"} element={<SchemaMainRenderer />}></Route>
       </Routes>
     </UiEntitesLayout>
   );

@@ -25,13 +25,16 @@ const getAxios = (specificBaseUrl) => {
     // interceptors Request------------------------------------
     instance.interceptors.request.use(
         async (config) => {
-            let userToken = Cookies.get('authJwtToken');
-            let token = userToken ? JSON.parse(userToken) : '';
+            // let userToken = Cookies.get('authJwtToken');
+            // let token = userToken ? JSON.parse(userToken) : '';
+            const token = localStorage.getItem("token") || "";
+            const tenant_schema = localStorage.getItem("x-tenant-schema") || "";
 
             if (token) {
                 config.headers = {
                     ...config.headers,
-                    Authorization: "bearer " + token
+                    Authorization: "bearer " + token,
+                    "x-tenant-schema": tenant_schema,
                 };
             }
             return config;
