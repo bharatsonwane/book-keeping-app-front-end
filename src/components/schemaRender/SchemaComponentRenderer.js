@@ -10,7 +10,7 @@ import Header from "../uiComponents/header";
 import TableComponent from "../uiComponents/tableComponent";
 import { AddButton } from "../uiComponents/AddButton";
 
-function SchemaFormFieldRender(props) {
+function SchemaFieldRender(props) {
   const {
     node,
     dataObject = {},
@@ -18,6 +18,7 @@ function SchemaFormFieldRender(props) {
     languageData = {},
     onChange = (dataMappingName, value) => {},
     onBlur = (dataMappingName, value) => {},
+    onClick = (e, node) => {},
   } = props;
 
   const name = (() => {
@@ -52,7 +53,6 @@ function SchemaFormFieldRender(props) {
   const isTouched = node.dataMappingName
     ? _.get(formValidationObject, `touched[${node.dataMappingName}]`, false)
     : false;
-
 
   if (node.type === "color") {
     return (
@@ -179,7 +179,7 @@ function SchemaFormFieldRender(props) {
   } else if (node.type === "table") {
     return <TableComponent node={node} value={value} />;
   } else if (node.type === "addButton") {
-    return <AddButton node={node} />;
+    return <AddButton node={node} onClick={onClick} />;
   }
 
   return <></>;
@@ -243,6 +243,7 @@ function SchemaComponentRenderer({
   handleChangeLanguage = () => {},
   handleInputChange = () => {},
   handleBlurChange = () => {},
+  handleClickChange = (e, node) => {},
 }) {
   return (
     <Fragment>
@@ -268,6 +269,7 @@ function SchemaComponentRenderer({
               handleChangeLanguage={handleChangeLanguage}
               handleInputChange={handleInputChange}
               handleBlurChange={handleBlurChange}
+              handleClickChange={handleClickChange}
             />
           ))}
         </Fragment>
@@ -286,6 +288,7 @@ function SchemaComponentRenderer({
               handleChangeLanguage={handleChangeLanguage}
               handleInputChange={handleInputChange}
               handleBlurChange={handleBlurChange}
+              handleClickChange={handleClickChange}
             />
           ))}
         </Fragment>
@@ -314,12 +317,13 @@ function SchemaComponentRenderer({
                 handleChangeLanguage={handleChangeLanguage}
                 handleInputChange={handleInputChange}
                 handleBlurChange={handleBlurChange}
+                handleClickChange={handleClickChange}
               />
             ))}
           </div>
         </div>
       ) : (
-        <SchemaFormFieldRender
+        <SchemaFieldRender
           key={`${node.type}_${node.label}`}
           sqlQueryList={sqlQueryList}
           node={node}
@@ -327,6 +331,7 @@ function SchemaComponentRenderer({
           formValidationObject={formValidationObject}
           onChange={handleInputChange}
           onBlur={(e) => handleBlurChange(e, node)}
+          onClick={(e, node) => handleClickChange(e, node)}
         />
       )}
     </Fragment>

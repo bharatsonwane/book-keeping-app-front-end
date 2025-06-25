@@ -11,7 +11,7 @@ const Home = () => {
       <Routes>
         <Route
           path={`/`}
-          element={<Navigate replace="/" to={`${Location.pathname}/list/id`} />}
+          element={<Navigate replace="/" to={`${Location.pathname}/list/:schemaName`} />}
         ></Route>
         <Route path={"list/:schemaName"} element={<HomeList />}></Route>
         <Route path={"list/entity-details"} element={<EntityDetails />}></Route>

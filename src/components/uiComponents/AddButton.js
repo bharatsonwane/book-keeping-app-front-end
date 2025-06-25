@@ -19,16 +19,21 @@ AddButton.defaultProps = {
 };
 
 export function AddButton(props) {
-  const { node } = props;
+  const { node, onClick = (e, node) => {} } = props;
 
-  const { label, onClick = () => {}, } = node;
-
-  console.log("bharatProps", props);
+  const { label } = node;
 
   return (
     <div
-      style={{width: "30%", display: "flex", flexDirection: "row", alignItems: "center"}}
-      onClick={onClick}
+      style={{
+        width: "30%",
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+      }}
+      onClick={(e) => {
+        onClick(e, node);
+      }}
     >
       <IoAddCircleOutline
         style={{
