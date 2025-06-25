@@ -42,15 +42,15 @@ function SchemaMainRenderer() {
 
   const getSchema = async () => {
     try {
-      // const responseData = await dispatch(
-      //   getSchemaByNameAction({ schemaName: params.schemaName })
-      // ).unwrap();
+      const responseData = await dispatch(
+        getSchemaByNameAction({ schemaName: params.schemaName })
+      ).unwrap();
 
-      // const schemaData = responseData.data;
+      const schemaData = responseData.data;
 
-      setSchema(foodDetailSchema);
+      setSchema(schemaData);
 
-      const initialData = getInitialSchemaValueObject(foodDetailSchema);
+      const initialData = getInitialSchemaValueObject(schemaData);
 
       setFormDataObject(initialData);
     } catch (error) {}
