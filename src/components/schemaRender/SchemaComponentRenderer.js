@@ -239,6 +239,119 @@ const RenderMultilingualField = ({
   return <></>;
 };
 
+const SchemaTabRenderer = ({
+  node,
+  prevNode,
+  sqlQueryList = [],
+  languageData = {},
+  dataObject = {},
+  formValidationObject = {},
+  handleChangeLanguage = () => {},
+  handleInputChange = () => {},
+  handleBlurChange = () => {},
+  handleClickChange = () => {},
+}) => {
+  const [selectedTabLabel, setSelectedTabLabel] = useState("");
+
+  useEffect(() => {
+    const tabLabel = getInitialTabLabel(node);
+    setSelectedTabLabel(tabLabel);
+  }, []);
+
+  const { tabData, parentTabLabel } = useMemo(() => {
+    if (selectedTabLabel) {
+      const { tabData, parentTabLabel } = getTabDataAndParentTabLabelByName(
+        node,
+        selectedTabLabel
+      );
+      return { tabData, parentTabLabel };
+    }
+    return { tabData: null, parentTabLabel: null };
+  }, [selectedTabLabel]);
+
+  return (
+    <>
+      <div id="navbarProductProfile" className="product-profile-navbar">
+        <ul className="nav nav-pills">
+          {node?.children?.map((tabNode, index) => {
+            return (
+              <li className="nav-item" key={index}>
+                {tabNode.type === "parentTab" ? (
+                  <>
+                    <div className="dropdown">
+                      <button
+                        className={`btn nav-link dropdown-toggle`}
+                        type="button"
+                        id={`dropdownMenuButton_${index}`}
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        data-tabselect={
+                          selectedTabLabel === tabNode.label ||
+                          parentTabLabel === tabNode.label
+                        }
+                      >
+                        {tabNode.label}
+                      </button>
+                      <ul
+                        className="dropdown-menu"
+                        aria-labelledby={`dropdownMenuButton_${index}`}
+                      >
+                        {tabNode?.children?.map((childTabNode, childIndex) => (
+                          <li key={`tab_${childTabNode.label}${childIndex}`}>
+                            <button
+                              className="dropdown-item"
+                              type="button"
+                              onClick={() =>
+                                setSelectedTabLabel(childTabNode.label)
+                              }
+                              data-tabselect={
+                                selectedTabLabel === childTabNode.label
+                              }
+                            >
+                              {childTabNode.label}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </>
+                ) : (
+                  <a
+                    key={`tab_${tabNode.label}${index}`}
+                    className="nav-link"
+                    role="button"
+                    data-tabselect={selectedTabLabel === tabNode.label}
+                    onClick={() => setSelectedTabLabel(tabNode.label)}
+                  >
+                    {tabNode.label}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {tabData?.type && (
+        <SchemaComponentRenderer
+          key={`${tabData?.type}_${tabData?.label}`}
+          sqlQueryList={sqlQueryList}
+          node={tabData}
+          prevNode={prevNode}
+          languageData={languageData}
+          dataObject={dataObject}
+          formValidationObject={formValidationObject}
+          isMultilingual={false}
+          handleChangeLanguage={handleChangeLanguage}
+          handleInputChange={handleInputChange}
+          handleBlurChange={handleBlurChange}
+          handleClickChange={handleClickChange}
+        />
+      )}
+    </>
+  );
+};
+
 export function SchemaComponentRenderer({
   sqlQueryList = [],
   node,
@@ -251,6 +364,10 @@ export function SchemaComponentRenderer({
   handleBlurChange = () => {},
   handleClickChange = (e, node) => {},
 }) {
+  const tabList = node?.children?.filter(
+    (child) => child.type === "tab" || child.type === "parentTab"
+  );
+
   return (
     <Fragment>
       <ErrorBoundary>
@@ -265,7 +382,20 @@ export function SchemaComponentRenderer({
           />
         </ErrorBoundary>
 
-        {node.type === "schema" ? (
+        {tabList && tabList?.length > 0 ? (
+          <SchemaTabRenderer
+            key={`tabField_${node.label}`}
+            sqlQueryList={sqlQueryList}
+            node={node}
+            prevNode={prevNode}
+            dataObject={dataObject}
+            formValidationObject={formValidationObject}
+            handleChangeLanguage={handleChangeLanguage}
+            handleInputChange={handleInputChange}
+            handleBlurChange={handleBlurChange}
+            handleClickChange={handleClickChange}
+          />
+        ) : node.type === "schema" ? (
           <Fragment>
             {node.children?.map((childNode, index, list) => (
               <SchemaComponentRenderer
@@ -349,73 +479,3 @@ export function SchemaComponentRenderer({
     </Fragment>
   );
 }
-
-export const SchemaTabRenderer = ({
-  schema,
-  selectedTabLabel,
-  parentTabLabel,
-  setSelectedTabLabel = () => {},
-}) => {
-  return (
-    <div id="navbarProductProfile" className="product-profile-navbar">
-      <ul className="nav nav-pills">
-        {schema.children.map((tabNode, index) => {
-          return (
-            <li className="nav-item" key={index}>
-              {tabNode.type === "parentTab" ? (
-                <>
-                  <div className="dropdown">
-                    <button
-                      className={`btn nav-link dropdown-toggle`}
-                      type="button"
-                      id={`dropdownMenuButton_${index}`}
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                      data-tabselect={
-                        selectedTabLabel === tabNode.label ||
-                        parentTabLabel === tabNode.label
-                      }
-                    >
-                      {tabNode.label}
-                    </button>
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby={`dropdownMenuButton_${index}`}
-                    >
-                      {tabNode.children.map((childTabNode, childIndex) => (
-                        <li key={`tab_${childTabNode.label}${childIndex}`}>
-                          <button
-                            className="dropdown-item"
-                            type="button"
-                            onClick={() =>
-                              setSelectedTabLabel(childTabNode.label)
-                            }
-                            data-tabselect={
-                              selectedTabLabel === childTabNode.label
-                            }
-                          >
-                            {childTabNode.label}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </>
-              ) : (
-                <a
-                  key={`tab_${tabNode.label}${index}`}
-                  className="nav-link"
-                  role="button"
-                  data-tabselect={selectedTabLabel === tabNode.label}
-                  onClick={() => setSelectedTabLabel(tabNode.label)}
-                >
-                  {tabNode.label}
-                </a>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-};

@@ -1,22 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import _ from "lodash";
-import {
-  getInitialSchemaValueObject,
-  getInitialTabLabel,
-  getTabDataAndParentTabLabelByName,
-} from "src/helper/schemaHelper";
+import { getInitialSchemaValueObject } from "src/helper/schemaHelper";
 import { useDispatch } from "react-redux";
 import { getSchemaByNameAction } from "src/redux/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
-import {
-  SchemaComponentRenderer,
-  SchemaTabRenderer,
-} from "src/components/schemaRender/SchemaComponentRenderer";
+import { SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
 import {
   getValidationErrorForFieldWithZod,
   getValidationErrorForSchemaWithZod,
 } from "src/helper/zodValidationHelper";
+import {foodDetailSchema} from "src/helper/schema/foodSchema";
 
 function SchemaMainRenderer() {
   const params = useParams();
@@ -25,8 +19,6 @@ function SchemaMainRenderer() {
   const dispatch = useDispatch();
 
   const [schema, setSchema] = useState(null);
-
-  const [selectedTabLabel, setSelectedTabLabel] = useState("");
 
   const [languageData, setLanguageData] = useState({
     selectedLanguage: "en",
@@ -49,33 +41,19 @@ function SchemaMainRenderer() {
     getSchema();
   }, []);
 
-  const { tabData, parentTabLabel } = useMemo(() => {
-    if (selectedTabLabel) {
-      const { tabData, parentTabLabel } = getTabDataAndParentTabLabelByName(
-        schema,
-        selectedTabLabel
-      );
-      return { tabData, parentTabLabel };
-    }
-    return { tabData: null, parentTabLabel: null };
-  }, [selectedTabLabel]);
-
   const getSchema = async () => {
     try {
-      const responseData = await dispatch(
-        getSchemaByNameAction({ schemaName: params.schemaName })
-      ).unwrap();
+      // const responseData = await dispatch(
+      //   getSchemaByNameAction({ schemaName: params.schemaName })
+      // ).unwrap();
 
-      const schemaData = responseData.data;
+      // const schemaData = responseData.data;
 
-      setSchema(schemaData);
+      setSchema(foodDetailSchema);
 
-      const initialData = getInitialSchemaValueObject(schemaData);
+      const initialData = getInitialSchemaValueObject(foodDetailSchema);
 
       setFormDataObject(initialData);
-
-      const tabLabel = getInitialTabLabel(schemaData);
-      setSelectedTabLabel(tabLabel);
     } catch (error) {}
   };
 
@@ -170,15 +148,8 @@ function SchemaMainRenderer() {
         <div className="w-20"></div>
       </div>
 
-      {schema && tabData && formDataObject && (
+      {schema && formDataObject && (
         <React.Fragment>
-          <SchemaTabRenderer
-            schema={schema}
-            selectedTabLabel={selectedTabLabel}
-            parentTabLabel={parentTabLabel}
-            setSelectedTabLabel={setSelectedTabLabel}
-          />
-
           <div
             className="product-profile--content"
             style={{
@@ -190,7 +161,7 @@ function SchemaMainRenderer() {
             <div className="row">
               <SchemaComponentRenderer
                 sqlQueryList={schema?.sqlQueryList}
-                node={tabData}
+                node={schema}
                 languageData={languageData}
                 dataObject={formDataObject}
                 formValidationObject={formValidationObject}
