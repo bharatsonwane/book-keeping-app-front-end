@@ -5,7 +5,6 @@ import Home from "../pages/home";
 import Services from "../pages/services/index";
 import Team from "../pages/team";
 import Work from "../pages/work";
-import BookKeeping from "src/pages/bookKeeping";
 import AuthLoading from "src/pages/loading/index";
 
 const MainApp = (props) => {
@@ -38,7 +37,6 @@ const MainApp = (props) => {
         <Route path={`services/*`} element={<Services />}></Route>
         <Route path={`team/*`} element={<Team />} />
         <Route path={`work/*`} element={<Work />} />
-        <Route path={`bookkeeping/*`} element={<BookKeeping />} />
       </Routes>
     </div>
     // </WithSideBar>

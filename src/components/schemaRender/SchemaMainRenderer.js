@@ -1,40 +1,28 @@
 import React, { useEffect, useMemo, useState } from "react";
+import _ from "lodash";
 import {
   getInitialSchemaValueObject,
   getInitialTabLabel,
   getTabDataAndParentTabLabelByName,
 } from "src/helper/schemaHelper";
-import SchemaTabRenderer from "../../../components/schemaRender/SchemaTabRenderer";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  addBookkeepingEntryAction,
-  getBookkeepingSchemaDetailsAction,
-  getSchemaByNameAction,
-  validateAllFormFieldAction,
-} from "src/redux/thunks/bookKeeping";
+import { useDispatch } from "react-redux";
+import { getSchemaByNameAction } from "src/redux/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import {
-  formFieldDataUpdateAction,
-  formFieldValidationAction,
-  updateFormObject,
-} from "src/redux/slice/bookKeeping";
-import SchemaComponentRenderer from "src/components/schemaRender/SchemaComponentRenderer";
-import { getValidationErrorForFieldWithZod } from "src/helper/zodValidationHelper";
+  SchemaComponentRenderer,
+  SchemaTabRenderer,
+} from "src/components/schemaRender/SchemaComponentRenderer";
+import {
+  getValidationErrorForFieldWithZod,
+  getValidationErrorForSchemaWithZod,
+} from "src/helper/zodValidationHelper";
 
 function SchemaMainRenderer() {
   const params = useParams();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-
-  const formDataObject = useSelector(
-    (state) => state.bookKeeping.formDataObject
-  );
-
-  const formValidationObject = useSelector(
-    (state) => state.bookKeeping.formValidation
-  );
 
   const [schema, setSchema] = useState(null);
 
@@ -46,6 +34,15 @@ function SchemaMainRenderer() {
       { label: "English", value: "en" },
       { label: "Finnish", value: "fi" },
     ],
+  });
+
+  const [formDataObject, setFormDataObject] = useState(null);
+
+  const [formValidationObject, setFormValidationObject] = useState({
+    isAllTouched: false,
+    touched: {},
+    errorMessage: {},
+    errorFieldList: [],
   });
 
   useEffect(() => {
@@ -63,7 +60,6 @@ function SchemaMainRenderer() {
     return { tabData: null, parentTabLabel: null };
   }, [selectedTabLabel]);
 
-
   const getSchema = async () => {
     try {
       const responseData = await dispatch(
@@ -76,7 +72,7 @@ function SchemaMainRenderer() {
 
       const initialData = getInitialSchemaValueObject(schemaData);
 
-      dispatch(updateFormObject(initialData));
+      setFormDataObject(initialData);
 
       const tabLabel = getInitialTabLabel(schemaData);
       setSelectedTabLabel(tabLabel);
@@ -88,55 +84,68 @@ function SchemaMainRenderer() {
   };
 
   const handleInputChange = (event) => {
-    dispatch(
-      formFieldDataUpdateAction({
-        name: event.target.name,
-        value: event.target.value,
-      })
-    );
+    debugger;
+    const { name, value } = event.target;
+    const newFormDataObject = _.cloneDeep(formDataObject || {});
+    _.set(newFormDataObject, `${name}`, value);
+    setFormDataObject(newFormDataObject);
   };
 
   const handleBlurChange = async (e, item) => {
     /** field validation */
     const { dataMappingName, errorMessage } =
       await getValidationErrorForFieldWithZod(item, e.target.value);
-    dispatch(
-      formFieldValidationAction({
-        dataMappingName: dataMappingName,
-        errorMessage: errorMessage,
-        touched: true,
-      })
-    );
+
+    const newFormValidationObject = _.cloneDeep(formValidationObject);
+
+    _.set(newFormValidationObject.touched, `${dataMappingName}`, true);
+
+    if (errorMessage) {
+      _.set(
+        newFormValidationObject.errorMessage,
+        `${dataMappingName}`,
+        errorMessage
+      );
+    } else {
+      _.set(newFormValidationObject.errorMessage, `${dataMappingName}`, "");
+    }
+
+    setFormValidationObject(newFormValidationObject);
+  };
+
+  const handleValidateAllFormField = async () => {
+    try {
+      const response = await getValidationErrorForSchemaWithZod(
+        schema,
+        formDataObject
+      );
+
+      const newFormValidationObject = {
+        ...formValidationObject,
+        isAllTouched: true,
+        errorMessage: response,
+      };
+
+      setFormValidationObject(newFormValidationObject);
+
+      return newFormValidationObject;
+    } catch (error) {}
   };
 
   const handleSubmit = async () => {
     try {
-      const response = await dispatch(
-        validateAllFormFieldAction({
-          formDataObject,
-          schema,
-        })
-      ).unwrap();
-      console.log("response", response);
+      const formValidationObject = await handleValidateAllFormField();
 
-      if (Object.keys(response).length > 0) {
+      if (Object.keys(formValidationObject.errorMessage).length > 0) {
         return;
       }
 
-      await dispatch(
-        addBookkeepingEntryAction({
-          schemaId: params.id,
-          entryData: formDataObject,
-        })
-      );
+      //  save data to db api call
 
-      navigate(`/app/bookkeeping/schema/${params.id}/list`);
-    } catch (error) {
-      console.error("form validation error", error);
-    }
+      //  navigate to back page
+      navigate(-1);
+    } catch (error) {}
   };
-
-  console.log("bharat", schema);
 
   return (
     <div
@@ -147,7 +156,6 @@ function SchemaMainRenderer() {
         className={`p-2 container-fluid d-flex flex-row justify-content-between bg-primary text-white`}
         style={{ alignItems: "center" }}
       >
-        {/* add button */}
         <Button
           variant="contained"
           color="secondary"
@@ -158,11 +166,11 @@ function SchemaMainRenderer() {
         >
           Add Entry
         </Button>
-        <h4>Bookkeeping Add New Entry</h4>
+        <h4>Add New Entry</h4>
         <div className="w-20"></div>
       </div>
 
-      {schema && tabData && (
+      {schema && tabData && formDataObject && (
         <React.Fragment>
           <SchemaTabRenderer
             schema={schema}

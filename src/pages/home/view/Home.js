@@ -4,7 +4,7 @@ import {
   useGetDataByIdQuery,
   useGetSchemaByNameQuery,
 } from "../../../redux/api/entitties.api";
-import SchemaComponentRenderer from "src/components/schemaRender/SchemaComponentRenderer";
+import { SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
 
 const Home = () => {
   const params = useParams();
