@@ -4,7 +4,10 @@ import { getInitialSchemaValueObject } from "src/helper/schemaHelper";
 import { useDispatch } from "react-redux";
 import { getSchemaByNameAction } from "src/redux/thunks/bookKeeping";
 import { useNavigate, useParams } from "react-router-dom";
-import { SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
+import {
+  ACTION_TYPE,
+  SchemaComponentRenderer,
+} from "src/components/schemaRender/SchemaComponentRenderer";
 import {
   getValidationErrorForFieldWithZod,
   getValidationErrorForSchemaWithZod,
@@ -18,6 +21,15 @@ function SchemaMainRenderer() {
   const dispatch = useDispatch();
 
   const [schema, setSchema] = useState(null);
+
+  const [schemaMetadata, setSchemaMetadata] = useState({
+    formReadOnly: false,
+    selectedLanguage: "en",
+    languageList: [
+      // { label: "English", value: "en" },
+      // { label: "Finnish", value: "fi" },
+    ],
+  });
 
   const [languageData, setLanguageData] = useState({
     selectedLanguage: "en",
@@ -60,7 +72,7 @@ function SchemaMainRenderer() {
     setLanguageData({ ...languageData, selectedLanguage });
   };
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event, nodeItem) => {
     debugger;
     const { name, value } = event.target;
     const newFormDataObject = _.cloneDeep(formDataObject || {});
@@ -68,10 +80,10 @@ function SchemaMainRenderer() {
     setFormDataObject(newFormDataObject);
   };
 
-  const handleBlurChange = async (e, item) => {
+  const handleBlurChange = async (e, nodeItem) => {
     /** field validation */
     const { dataMappingName, errorMessage } =
-      await getValidationErrorForFieldWithZod(item, e.target.value);
+      await getValidationErrorForFieldWithZod(nodeItem, e.target.value);
 
     const newFormValidationObject = _.cloneDeep(formValidationObject);
 
@@ -124,6 +136,18 @@ function SchemaMainRenderer() {
     } catch (error) {}
   };
 
+  const handleActionTrigger = (e, nodeItem) => {
+    if (e.actionType === ACTION_TYPE.onChange) {
+      handleInputChange(e, nodeItem);
+    } else if (e.actionType === ACTION_TYPE.onBlur) {
+      handleBlurChange(e, nodeItem);
+    } else if (e.actionType === ACTION_TYPE.onClick) {
+      handleSubmit();
+    } else if (e.actionType === ACTION_TYPE.LANGUAGE_CHANGE) {
+      handleChangeLanguage(e.target.value);
+    }
+  };
+
   return (
     <div
       className="col-xl-9 col-xxl-8 col-sm-12"
@@ -140,14 +164,12 @@ function SchemaMainRenderer() {
           >
             <div className="row">
               <SchemaComponentRenderer
+                schemaMetadata={schemaMetadata}
                 sqlQueryList={schema?.sqlQueryList}
                 node={schema}
-                languageData={languageData}
                 dataObject={formDataObject}
                 formValidationObject={formValidationObject}
-                handleChangeLanguage={handleChangeLanguage}
-                handleInputChange={handleInputChange}
-                handleBlurChange={handleBlurChange}
+                handleActionTrigger={handleActionTrigger}
               />
             </div>
           </div>

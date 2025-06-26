@@ -17,23 +17,34 @@ import TableComponent from "../uiComponents/tableComponent";
 import { Button } from "../uiComponents/Button";
 import ErrorBoundary from "../ErrorBoundary";
 import {
-  getInitialSchemaValueObject,
   getInitialTabLabel,
   getTabDataAndParentTabLabelByName,
 } from "src/helper/schemaHelper";
 import { HeadingWithButton } from "../uiComponents/HeadingWithButton";
 
+export const ACTION_TYPE = {
+  onChange: "onChange",
+  onBlur: "onBlur",
+  onClick: "onClick",
+  LANGUAGE_CHANGE: "languageChange",
+
+  SAVE: "save",
+  DELETE: "delete",
+  ADD: "add",
+  EDIT: "edit",
+};
+
 // Custom hook for field value and validation logic
-const useFieldData = (node, dataObject, formValidationObject, languageData) => {
+const useFieldData = (node, dataObject, formValidationObject, schemaMetadata) => {
   return useMemo(() => {
     const name = node.isMultilingual
-      ? `${node.dataMappingName}.${languageData.selectedLanguage}`
+      ? `${node.dataMappingName}.${schemaMetadata.selectedLanguage}`
       : node.dataMappingName;
 
     const value = node.isMultilingual
       ? _.get(
           dataObject,
-          `${node.dataMappingName}.${languageData.selectedLanguage}`,
+          `${node.dataMappingName}.${schemaMetadata.selectedLanguage}`,
           ""
         )
       : node.dataMappingName
@@ -56,22 +67,34 @@ const useFieldData = (node, dataObject, formValidationObject, languageData) => {
       : false;
 
     return { name, value, isAllTouched, touched, errorMessage, isTouched };
-  }, [node, dataObject, formValidationObject, languageData]);
+  }, [node, dataObject, formValidationObject, schemaMetadata]);
 };
 
-function SchemaFieldRender(props) {
-  const {
-    node,
-    dataObject = {},
-    formValidationObject = {},
-    languageData = {},
-    onChange = (dataMappingName, value) => {},
-    onBlur = (dataMappingName, value) => {},
-    onClick = (e, node) => {},
-  } = props;
-
+function SchemaFieldRender({
+  node,
+  dataObject = {},
+  formValidationObject = {},
+  schemaMetadata = {},
+  handleActionTrigger = (e, node) => {},
+} = {}) {
   const { name, value, isAllTouched, touched, errorMessage, isTouched } =
-    useFieldData(node, dataObject, formValidationObject, languageData);
+    useFieldData(node, dataObject, formValidationObject, schemaMetadata);
+
+  const onChange = (e, node) => {
+    e.actionType = ACTION_TYPE.onChange;
+    debugger;
+    handleActionTrigger(e, node);
+  };
+
+  const onBlur = (e, node) => {
+    e.actionType = ACTION_TYPE.onBlur;
+    handleActionTrigger(e, node);
+  };
+
+  const onClick = (e, node) => {
+    e.actionType = ACTION_TYPE.onClick;
+    handleActionTrigger(e, node);
+  };
 
   const commonProps = {
     key: `${node.dataMappingName}_${node.type}`,
@@ -80,7 +103,7 @@ function SchemaFieldRender(props) {
     tooltipText: node.tooltipText,
     type: node.type,
     name: node.dataMappingName,
-    readOnly: node.readOnly,
+    readOnly: node.readOnly || schemaMetadata.formReadOnly,
     className: node.className,
     isSmallScreen: node.isSmallScreen,
     value,
@@ -89,6 +112,7 @@ function SchemaFieldRender(props) {
     errorMessage,
     onBlur,
     onChange,
+    handleActionTrigger,
   };
 
   const renderFieldByType = () => {
@@ -145,19 +169,23 @@ function SchemaFieldRender(props) {
   return renderFieldByType();
 }
 
-const RenderMultilingualField = React.memo(function RenderMultilingualField(
-  props
-) {
-  const {
-    node,
-    prevNode,
-    languageData,
-    handleChangeLanguage = () => {},
-  } = props;
-
+const RenderMultilingualField = React.memo(function RenderMultilingualField({
+  node,
+  prevNode,
+  schemaMetadata,
+  handleActionTrigger = () => {},
+} = {}) {
   const isMultilingualStart =
     node?.isMultilingual && (!prevNode || !prevNode?.isMultilingual);
   const isMultilingualEnd = !node?.isMultilingual && prevNode?.isMultilingual;
+
+  const handleLanguageChange = (languageValue) => {
+    const event = {
+      actionType: ACTION_TYPE.LANGUAGE_CHANGE,
+      target: { value: languageValue },
+    };
+    handleActionTrigger(event, node);
+  };
 
   if (isMultilingualStart) {
     return (
@@ -169,13 +197,13 @@ const RenderMultilingualField = React.memo(function RenderMultilingualField(
         <div className="fw-bold me-3">Language</div>
         <div id="navbarProductProfile">
           <ul className="nav nav-pills">
-            {languageData?.languageList?.map((item, index) => (
+            {schemaMetadata?.languageList?.map((item, index) => (
               <li className="nav-item" key={index}>
                 <a
                   className="nav-link fw-normal"
                   role="button"
-                  data-tabselect={item.value === languageData?.selectedLanguage}
-                  onClick={() => handleChangeLanguage(item.value)}
+                  data-tabselect={item.value === schemaMetadata?.selectedLanguage}
+                  onClick={() => handleLanguageChange(item.value)}
                 >
                   {item.label}
                 </a>
@@ -297,13 +325,10 @@ const SchemaTabRenderer = React.memo(function SchemaTabRenderer({
   node,
   prevNode,
   sqlQueryList = [],
-  languageData = {},
+  schemaMetadata = {},
   dataObject = {},
   formValidationObject = {},
-  handleChangeLanguage = () => {},
-  handleInputChange = () => {},
-  handleBlurChange = () => {},
-  handleClickChange = () => {},
+  handleActionTrigger = () => {},
 }) {
   const { selectedTabLabel, setSelectedTabLabel, tabData, parentTabLabel } =
     useTabManagement(node);
@@ -323,14 +348,10 @@ const SchemaTabRenderer = React.memo(function SchemaTabRenderer({
           sqlQueryList={sqlQueryList}
           node={tabData}
           prevNode={prevNode}
-          languageData={languageData}
+          schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
-          isMultilingual={false}
-          handleChangeLanguage={handleChangeLanguage}
-          handleInputChange={handleInputChange}
-          handleBlurChange={handleBlurChange}
-          handleClickChange={handleClickChange}
+          handleActionTrigger={handleActionTrigger}
         />
       )}
     </>
@@ -342,13 +363,10 @@ const SectionRenderer = React.memo(function SectionRenderer({
   node,
   children,
   sqlQueryList,
-  languageData,
+  schemaMetadata,
   dataObject,
   formValidationObject,
-  handleChangeLanguage,
-  handleInputChange,
-  handleBlurChange,
-  handleClickChange,
+  handleActionTrigger,
 }) {
   return (
     <div
@@ -370,13 +388,10 @@ const SectionRenderer = React.memo(function SectionRenderer({
 const ChildNodesRenderer = React.memo(function ChildNodesRenderer({
   children,
   sqlQueryList,
-  languageData,
+  schemaMetadata,
   dataObject,
   formValidationObject,
-  handleChangeLanguage,
-  handleInputChange,
-  handleBlurChange,
-  handleClickChange,
+  handleActionTrigger,
   isMultilingual = false,
 }) {
   return (
@@ -387,14 +402,11 @@ const ChildNodesRenderer = React.memo(function ChildNodesRenderer({
           sqlQueryList={sqlQueryList}
           node={childNode}
           prevNode={index > 0 ? list[index - 1] : null}
-          languageData={languageData}
+          schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
           isMultilingual={isMultilingual}
-          handleChangeLanguage={handleChangeLanguage}
-          handleInputChange={handleInputChange}
-          handleBlurChange={handleBlurChange}
-          handleClickChange={handleClickChange}
+          handleActionTrigger={handleActionTrigger}
         />
       ))}
     </Fragment>
@@ -405,13 +417,10 @@ export function SchemaComponentRenderer({
   sqlQueryList = [],
   node,
   prevNode,
-  languageData,
+  schemaMetadata = {},
   dataObject = {},
   formValidationObject = {},
-  handleChangeLanguage = () => {},
-  handleInputChange = () => {},
-  handleBlurChange = () => {},
-  handleClickChange = (e, node) => {},
+  handleActionTrigger = (e, node) => {},
 }) {
   const tabList = useMemo(
     () =>
@@ -431,10 +440,8 @@ export function SchemaComponentRenderer({
           prevNode={prevNode}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
-          handleChangeLanguage={handleChangeLanguage}
-          handleInputChange={handleInputChange}
-          handleBlurChange={handleBlurChange}
-          handleClickChange={handleClickChange}
+          schemaMetadata={schemaMetadata}
+          handleActionTrigger={handleActionTrigger}
         />
       );
     }
@@ -444,13 +451,10 @@ export function SchemaComponentRenderer({
         <ChildNodesRenderer
           children={node.children}
           sqlQueryList={sqlQueryList}
-          languageData={languageData}
+          schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
-          handleChangeLanguage={handleChangeLanguage}
-          handleInputChange={handleInputChange}
-          handleBlurChange={handleBlurChange}
-          handleClickChange={handleClickChange}
+          handleActionTrigger={handleActionTrigger}
         />
       );
     }
@@ -460,14 +464,11 @@ export function SchemaComponentRenderer({
         <ChildNodesRenderer
           children={node.children}
           sqlQueryList={sqlQueryList}
-          languageData={languageData}
+          schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
           isMultilingual={false}
-          handleChangeLanguage={handleChangeLanguage}
-          handleInputChange={handleInputChange}
-          handleBlurChange={handleBlurChange}
-          handleClickChange={handleClickChange}
+          handleActionTrigger={handleActionTrigger}
         />
       );
     }
@@ -477,25 +478,19 @@ export function SchemaComponentRenderer({
         <SectionRenderer
           node={node}
           sqlQueryList={sqlQueryList}
-          languageData={languageData}
+          schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
-          handleChangeLanguage={handleChangeLanguage}
-          handleInputChange={handleInputChange}
-          handleBlurChange={handleBlurChange}
-          handleClickChange={handleClickChange}
+          handleActionTrigger={handleActionTrigger}
         >
           <ChildNodesRenderer
             children={node.children}
             sqlQueryList={sqlQueryList}
-            languageData={languageData}
+            schemaMetadata={schemaMetadata}
             dataObject={dataObject}
             formValidationObject={formValidationObject}
             isMultilingual={false}
-            handleChangeLanguage={handleChangeLanguage}
-            handleInputChange={handleInputChange}
-            handleBlurChange={handleBlurChange}
-            handleClickChange={handleClickChange}
+            handleActionTrigger={handleActionTrigger}
           />
         </SectionRenderer>
       );
@@ -508,10 +503,8 @@ export function SchemaComponentRenderer({
         node={node}
         dataObject={dataObject}
         formValidationObject={formValidationObject}
-        languageData={languageData}
-        onChange={handleInputChange}
-        onBlur={(e) => handleBlurChange(e, node)}
-        onClick={(e, node) => handleClickChange(e, node)}
+        schemaMetadata={schemaMetadata}
+        handleActionTrigger={(e, node) => handleActionTrigger(e, node)}
       />
     );
   };
@@ -525,8 +518,8 @@ export function SchemaComponentRenderer({
             sqlQueryList={sqlQueryList}
             node={node}
             prevNode={prevNode}
-            languageData={languageData}
-            handleChangeLanguage={handleChangeLanguage}
+            schemaMetadata={schemaMetadata}
+            handleActionTrigger={handleActionTrigger}
           />
         </ErrorBoundary>
 

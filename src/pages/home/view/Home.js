@@ -4,7 +4,7 @@ import {
   useGetDataByIdQuery,
   useGetSchemaByNameQuery,
 } from "../../../redux/api/entitties.api";
-import { SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
+import { ACTION_TYPE, SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
 
 const Home = () => {
   const params = useParams();
@@ -48,6 +48,12 @@ const Home = () => {
     }
   };
 
+  const handleActionTrigger = (e, nodeItem) => {
+    if (e.actionType === ACTION_TYPE.onClick) {
+      handleClick(e, nodeItem);
+    }
+  };
+
   return (
     <div
       className="container"
@@ -58,7 +64,7 @@ const Home = () => {
         sqlQueryList={schemaData?.sqlQueryList || []}
         dataObject={queryData}
         formValidationObject={{}}
-        handleClickChange={handleClick}
+        handleActionTrigger={handleActionTrigger}
       />
     </div>
   );
