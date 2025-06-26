@@ -40,8 +40,6 @@ function SchemaMainRenderer() {
 
   const [formDataObject, setFormDataObject] = useState(null);
 
-  console.log("formDataObject", formDataObject);
-
   const [formValidationObject, setFormValidationObject] = useState({
     isAllTouched: false,
     touched: {},
@@ -76,7 +74,7 @@ function SchemaMainRenderer() {
             dataValue: { id: id },
           })
         ).unwrap();
-        setFormDataObject(responseData.data);
+        setFormDataObject(responseData.data[0]);
       } else {
         const initialData = getInitialSchemaValueObject(schemaData);
 

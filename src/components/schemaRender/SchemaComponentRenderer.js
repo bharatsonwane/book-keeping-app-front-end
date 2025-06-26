@@ -108,64 +108,60 @@ function SchemaFieldRender({
     handleActionTrigger,
   };
 
-  const renderFieldByType = () => {
-    if (node.type === "color") {
-      return <InputColorWithLabel {...commonProps} />;
-    }
+  if (node.type === "color") {
+    return <InputColorWithLabel {...commonProps} />;
+  }
 
-    if (node.type === "date") {
-      return <InputDateTimePicker {...commonProps} />;
-    }
+  if (node.type === "date") {
+    return <InputDateTimePicker {...commonProps} />;
+  }
 
-    if (node.type === "switch") {
-      return <InputSwitchWithLable {...commonProps} />;
-    }
+  if (node.type === "switch") {
+    return <InputSwitchWithLable {...commonProps} />;
+  }
 
-    if (node.type === "text" || node.type === "number") {
-      return <InputTextWithLabel {...commonProps} />;
-    }
+  if (node.type === "text" || node.type === "number") {
+    return <InputTextWithLabel {...commonProps} />;
+  }
 
-    if (node.type === "textarea") {
-      return <InputTextareaWithLabel {...commonProps} />;
-    }
+  if (node.type === "textarea") {
+    return <InputTextareaWithLabel {...commonProps} />;
+  }
 
-    if (node.type === "select") {
-      return (
-        <InputSelectDropdown
-          {...commonProps}
-          loading={node.loading}
-          options={node.options}
-          isMultilingual={node.isMultilingual}
-        />
-      );
-    }
+  if (node.type === "select") {
+    return (
+      <InputSelectDropdown
+        {...commonProps}
+        loading={node.loading}
+        options={node.options}
+        isMultilingual={node.isMultilingual}
+      />
+    );
+  }
 
-    if (node.type === "heading") {
-      return <Header label={node.label} />;
-    }
+  if (node.type === "heading") {
+    return <Header label={node.label} />;
+  }
 
-    if (node.type === "table") {
-      return (
-        <TableComponent
-          handleActionTrigger={handleActionTrigger}
-          node={node}
-          value={value}
-        />
-      );
-    }
+  if (node.type === "table") {
+    return (
+      <TableComponent
+        handleActionTrigger={handleActionTrigger}
+        node={node}
+        value={value}
+      />
+    );
+  }
 
-    if (node.type === "button") {
-      return <Button node={node} onClick={onClick} />;
-    }
+  if (node.type === "button") {
+    return <Button node={node} onClick={onClick} />;
+  }
 
-    if (node.type === "headingWithButton") {
-      return <HeadingWithButton node={node} onClick={onClick} />;
-    }
+  if (node.type === "headingWithButton") {
+    return <HeadingWithButton node={node} onClick={onClick} />;
+  }
 
-    return null;
-  };
-
-  return renderFieldByType();
+  return null;
 }
 
 const RenderMultilingualField = React.memo(function RenderMultilingualField({
