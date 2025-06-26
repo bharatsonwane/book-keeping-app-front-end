@@ -4,7 +4,8 @@ import {
   useGetDataByIdQuery,
   useGetSchemaByNameQuery,
 } from "../../../redux/api/entitties.api";
-import { ACTION_TYPE, SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
+import { SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
+import { SCHEMA_CONSTANT } from "src/helper/schemaHelper";
 
 const Home = () => {
   const params = useParams();
@@ -48,9 +49,26 @@ const Home = () => {
     }
   };
 
+  const handleRowClick = (e, nodeItem) => {
+    const onClick = nodeItem.onRowClick;
+    if (onClick && onClick.navigationPath) {
+      let path = onClick.navigationPath;
+      Object.keys(onClick).forEach((key) => {
+        if (key !== "navigationPath") {
+          path = path.replace(`:${key}`, onClick[key]);
+        }
+      });
+
+      // Now navigate to the resolved path
+      navigate(path);
+    }
+  };
+
   const handleActionTrigger = (e, nodeItem) => {
-    if (e.actionType === ACTION_TYPE.onClick) {
+    if (e.actionType === SCHEMA_CONSTANT.onClick) {
       handleClick(e, nodeItem);
+    } else if (e.actionType === SCHEMA_CONSTANT.onRowClick) {
+      handleRowClick(e, nodeItem);
     }
   };
 

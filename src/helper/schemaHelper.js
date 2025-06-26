@@ -1,4 +1,22 @@
 import _ from "lodash";
+
+export const SCHEMA_CONSTANT = {
+  onChange: "onChange",
+  onBlur: "onBlur",
+  onClick: "onClick",
+  LANGUAGE_CHANGE: "languageChange",
+  onRowClick: "onRowClick",
+  // UI screen type
+  VIEW: "view",
+  CREATE: "create",
+  UPDATE: "update",
+  // action type
+  SAVE: "save",
+  DELETE: "delete",
+  ADD: "add",
+  EDIT: "edit",
+};
+
 /**
  * Function to find a tab object by tabLabel
  * @param {Object} schema - The schema object to search within
@@ -52,22 +70,16 @@ export const getInitialTabLabel = (schema) => {
 };
 
 export const getInitialSchemaValueObject = (schema) => {
-
   const valueObject = {};
 
   const recursiveAction = (node) => {
-
-
-    if(node.children){
+    if (node.children) {
       for (const child of node.children) {
         recursiveAction(child);
       }
-
-    } else if(node.dataMappingName) {
-     _.set(valueObject, node.dataMappingName, "");
+    } else if (node.dataMappingName) {
+      _.set(valueObject, node.dataMappingName, "");
     }
-
-
   };
 
   recursiveAction(schema);

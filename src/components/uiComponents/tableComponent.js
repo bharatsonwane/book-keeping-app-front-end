@@ -1,8 +1,9 @@
 import * as React from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { SCHEMA_CONSTANT } from "src/helper/schemaHelper";
 
 export default function TableComponent(props) {
-  const { node, value = [] } = props;
+  const { node, value = [], handleActionTrigger = () => {} } = props;
 
   const { columns, rows } = (() => {
     const columns = node?.children?.map((ele) => {
@@ -18,6 +19,17 @@ export default function TableComponent(props) {
     return { columns, rows };
   })();
 
+  const handleRowClick = (e) => {
+    const event = {
+      actionType: SCHEMA_CONSTANT.onRowClick,
+    };
+    const newNode = {
+      ...node,
+      onRowClick: { ...node.onRowClick, id: e.row.id },
+    };
+    handleActionTrigger(event, newNode);
+  };
+
   return (
     <div style={{ height: 400, width: "100%" }}>
       <DataGrid
@@ -30,6 +42,9 @@ export default function TableComponent(props) {
         }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
+        onRowClick={(e) => {
+          handleRowClick(e, node);
+        }}
       />
     </div>
   );

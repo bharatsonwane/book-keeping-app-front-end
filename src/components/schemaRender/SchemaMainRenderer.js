@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
 import _ from "lodash";
-import { getInitialSchemaValueObject } from "src/helper/schemaHelper";
-import { useDispatch } from "react-redux";
-import { getSchemaByNameAction } from "src/redux/thunks/bookKeeping";
-import { useNavigate, useParams } from "react-router-dom";
 import {
-  ACTION_TYPE,
-  SchemaComponentRenderer,
-} from "src/components/schemaRender/SchemaComponentRenderer";
+  getInitialSchemaValueObject,
+  SCHEMA_CONSTANT,
+} from "src/helper/schemaHelper";
+import { useDispatch } from "react-redux";
+import {
+  getDataByQueryAction,
+  getSchemaByNameAction,
+} from "src/redux/thunks/bookKeeping";
+import { useNavigate, useParams } from "react-router-dom";
+import { SchemaComponentRenderer } from "src/components/schemaRender/SchemaComponentRenderer";
 import {
   getValidationErrorForFieldWithZod,
   getValidationErrorForSchemaWithZod,
 } from "src/helper/zodValidationHelper";
-import { foodDetailSchema } from "src/helper/schema/foodSchema";
 
 function SchemaMainRenderer() {
-  const params = useParams();
+  /**
+   * actionType: create, update, view
+   * schemaName: schema name
+   * id: id of the record
+   */
+  const { schemaName, actionType, id } = useParams();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -23,7 +30,7 @@ function SchemaMainRenderer() {
   const [schema, setSchema] = useState(null);
 
   const [schemaMetadata, setSchemaMetadata] = useState({
-    formReadOnly: false,
+    formReadOnly: actionType === SCHEMA_CONSTANT.VIEW ? true : false,
     selectedLanguage: "en",
     languageList: [
       // { label: "English", value: "en" },
@@ -32,6 +39,8 @@ function SchemaMainRenderer() {
   });
 
   const [formDataObject, setFormDataObject] = useState(null);
+
+  console.log("formDataObject", formDataObject);
 
   const [formValidationObject, setFormValidationObject] = useState({
     isAllTouched: false,
@@ -47,16 +56,32 @@ function SchemaMainRenderer() {
   const getSchema = async () => {
     try {
       const responseData = await dispatch(
-        getSchemaByNameAction({ schemaName: params.schemaName })
+        getSchemaByNameAction({ schemaName: schemaName })
       ).unwrap();
 
       const schemaData = responseData.data;
 
       setSchema(schemaData);
 
-      const initialData = getInitialSchemaValueObject(schemaData);
+      const sqlQueryList = schemaData?.sqlQueryList || [];
+      const defaultQueryName = schemaData?.defaultQueryName || "";
+      const defaultQueryObject = sqlQueryList.find(
+        (ele) => ele.queryName === defaultQueryName
+      );
 
-      setFormDataObject(initialData);
+      if (defaultQueryObject && id) {
+        const responseData = await dispatch(
+          getDataByQueryAction({
+            query: defaultQueryObject.query,
+            dataValue: { id: id },
+          })
+        ).unwrap();
+        setFormDataObject(responseData.data);
+      } else {
+        const initialData = getInitialSchemaValueObject(schemaData);
+
+        setFormDataObject(initialData);
+      }
     } catch (error) {}
   };
 
@@ -68,7 +93,6 @@ function SchemaMainRenderer() {
   };
 
   const handleInputChange = (event, nodeItem) => {
-    debugger;
     const { name, value } = event.target;
     const newFormDataObject = _.cloneDeep(formDataObject || {});
     _.set(newFormDataObject, `${name}`, value);
@@ -131,15 +155,17 @@ function SchemaMainRenderer() {
     } catch (error) {}
   };
 
+  // :actionType/:schemaName/:id
+
   const handleActionTrigger = (e, nodeItem) => {
-    if (e.actionType === ACTION_TYPE.onChange) {
-      handleInputChange(e, nodeItem);
-    } else if (e.actionType === ACTION_TYPE.onBlur) {
-      handleBlurChange(e, nodeItem);
-    } else if (e.actionType === ACTION_TYPE.onClick) {
-      handleSubmit();
-    } else if (e.actionType === ACTION_TYPE.LANGUAGE_CHANGE) {
+    if (e.actionType === SCHEMA_CONSTANT.LANGUAGE_CHANGE) {
       handleChangeLanguage(e.target.value);
+    } else if (e.actionType === SCHEMA_CONSTANT.onChange) {
+      handleInputChange(e, nodeItem);
+    } else if (e.actionType === SCHEMA_CONSTANT.onBlur) {
+      handleBlurChange(e, nodeItem);
+    } else if (e.actionType === SCHEMA_CONSTANT.onClick) {
+      handleSubmit();
     }
   };
 

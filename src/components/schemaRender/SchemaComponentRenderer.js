@@ -19,23 +19,17 @@ import ErrorBoundary from "../ErrorBoundary";
 import {
   getInitialTabLabel,
   getTabDataAndParentTabLabelByName,
+  SCHEMA_CONSTANT,
 } from "src/helper/schemaHelper";
 import { HeadingWithButton } from "../uiComponents/HeadingWithButton";
 
-export const ACTION_TYPE = {
-  onChange: "onChange",
-  onBlur: "onBlur",
-  onClick: "onClick",
-  LANGUAGE_CHANGE: "languageChange",
-
-  SAVE: "save",
-  DELETE: "delete",
-  ADD: "add",
-  EDIT: "edit",
-};
-
 // Custom hook for field value and validation logic
-const useFieldData = (node, dataObject, formValidationObject, schemaMetadata) => {
+const useFieldData = (
+  node,
+  dataObject,
+  formValidationObject,
+  schemaMetadata
+) => {
   return useMemo(() => {
     const name = node.isMultilingual
       ? `${node.dataMappingName}.${schemaMetadata.selectedLanguage}`
@@ -80,19 +74,18 @@ function SchemaFieldRender({
   const { name, value, isAllTouched, touched, errorMessage, isTouched } =
     useFieldData(node, dataObject, formValidationObject, schemaMetadata);
 
-  const onChange = (e, node) => {
-    e.actionType = ACTION_TYPE.onChange;
-    debugger;
+  const onChange = (e) => {
+    e.actionType = SCHEMA_CONSTANT.onChange;
     handleActionTrigger(e, node);
   };
 
-  const onBlur = (e, node) => {
-    e.actionType = ACTION_TYPE.onBlur;
+  const onBlur = (e) => {
+    e.actionType = SCHEMA_CONSTANT.onBlur;
     handleActionTrigger(e, node);
   };
 
-  const onClick = (e, node) => {
-    e.actionType = ACTION_TYPE.onClick;
+  const onClick = (e) => {
+    e.actionType = SCHEMA_CONSTANT.onClick;
     handleActionTrigger(e, node);
   };
 
@@ -152,7 +145,13 @@ function SchemaFieldRender({
     }
 
     if (node.type === "table") {
-      return <TableComponent node={node} value={value} />;
+      return (
+        <TableComponent
+          handleActionTrigger={handleActionTrigger}
+          node={node}
+          value={value}
+        />
+      );
     }
 
     if (node.type === "button") {
@@ -181,7 +180,7 @@ const RenderMultilingualField = React.memo(function RenderMultilingualField({
 
   const handleLanguageChange = (languageValue) => {
     const event = {
-      actionType: ACTION_TYPE.LANGUAGE_CHANGE,
+      actionType: SCHEMA_CONSTANT.LANGUAGE_CHANGE,
       target: { value: languageValue },
     };
     handleActionTrigger(event, node);
@@ -202,7 +201,9 @@ const RenderMultilingualField = React.memo(function RenderMultilingualField({
                 <a
                   className="nav-link fw-normal"
                   role="button"
-                  data-tabselect={item.value === schemaMetadata?.selectedLanguage}
+                  data-tabselect={
+                    item.value === schemaMetadata?.selectedLanguage
+                  }
                   onClick={() => handleLanguageChange(item.value)}
                 >
                   {item.label}

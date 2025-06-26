@@ -11,12 +11,22 @@ const Home = () => {
       <Routes>
         <Route
           path={`/`}
-          element={<Navigate replace="/" to={`${Location.pathname}/list/:schemaName`} />}
+          element={
+            <Navigate
+              replace="/"
+              to={`${Location.pathname}/list/:schemaName`}
+            />
+          }
         ></Route>
         <Route path={"list/:schemaName"} element={<HomeList />}></Route>
-        <Route path={"create/:schemaName"} element={<SchemaMainRenderer />}></Route>
-        <Route path={"update/:schemaName/:id"} element={<SchemaMainRenderer />}></Route>
-        <Route path={"view/:schemaName/:id"} element={<SchemaMainRenderer />}></Route>
+        <Route
+          path={"create/:schemaName"}
+          element={<SchemaMainRenderer />}
+        ></Route>
+        <Route
+          path={":actionType/:schemaName/:id"}
+          element={<SchemaMainRenderer />}
+        ></Route>
       </Routes>
     </UiEntitesLayout>
   );

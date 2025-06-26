@@ -17,3 +17,21 @@ export const getSchemaByNameAction = createAsyncThunk(
     }
   }
 );
+
+export const getDataByQueryAction = createAsyncThunk(
+  "bookkeeping/getDataByQueryAction",
+  async (model, thunkApi) => {
+    try {
+      let res = await getAxios().post(`/ui/get-data-by-query`, {
+        query: model.query,
+        dataValue: model.dataValue,
+      });
+
+      const responseData = res.data;
+
+      return responseData;
+    } catch (error) {
+      return thunkApi.rejectWithValue("error");
+    }
+  }
+);
