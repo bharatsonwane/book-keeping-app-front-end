@@ -428,6 +428,77 @@ export function SchemaComponentRenderer({
   );
 
   const renderContent = () => {
+    if (node.isArray && node.dataMappingName) {
+      const arrayData = _.get(dataObject, node.dataMappingName, []);
+      const handleAdd = () => {
+        // Create a new empty object based on children schema
+        const newItem = {};
+        (node.children || []).forEach((child) => {
+          newItem[child.dataMappingName] = "";
+        });
+        const newArray = [...arrayData, newItem];
+        // You must update the main form state here (lift this up if needed)
+        handleActionTrigger(
+          {
+            actionType: "arrayAdd",
+            dataMappingName: node.dataMappingName,
+            newArray,
+          },
+          node
+        );
+      };
+      const handleRemove = (idx) => {
+        const newArray = arrayData.filter((_, i) => i !== idx);
+        handleActionTrigger(
+          {
+            actionType: "arrayRemove",
+            dataMappingName: node.dataMappingName,
+            newArray,
+          },
+          node
+        );
+      };
+
+      return (
+        <div
+          key={`${node.label}_${node.type}_array`}
+          className="row"
+          style={{
+            border: "1px solid #eee",
+            padding: 10,
+          }}
+        >
+          <div style={{ fontWeight: 600 }}>{node.label}</div>
+          {arrayData.map((item, idx) => (
+            <div
+              className="row"
+              style={{ border: "1px solid #eee", padding: 10 }}
+            >
+              <ChildNodesRenderer
+                children={node.children}
+                schemaMetadata={schemaMetadata}
+                dataObject={item}
+                formValidationObject={formValidationObject}
+                handleActionTrigger={handleActionTrigger}
+                parentDataMappingName={`${node.dataMappingName}[${idx}]`}
+              />
+
+              <button
+                type="button"
+                onClick={() => handleRemove(idx)}
+                style={{ marginTop: 4 }}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={handleAdd}>
+            Add {node.label}
+          </button>
+        </div>
+      );
+    }
+
     if (tabList && tabList.length > 0) {
       return (
         <SchemaTabRenderer
