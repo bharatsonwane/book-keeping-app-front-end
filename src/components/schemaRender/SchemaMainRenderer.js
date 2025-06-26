@@ -31,14 +31,6 @@ function SchemaMainRenderer() {
     ],
   });
 
-  const [languageData, setLanguageData] = useState({
-    selectedLanguage: "en",
-    languageList: [
-      { label: "English", value: "en" },
-      { label: "Finnish", value: "fi" },
-    ],
-  });
-
   const [formDataObject, setFormDataObject] = useState(null);
 
   const [formValidationObject, setFormValidationObject] = useState({
@@ -69,7 +61,10 @@ function SchemaMainRenderer() {
   };
 
   const handleChangeLanguage = (selectedLanguage) => {
-    setLanguageData({ ...languageData, selectedLanguage });
+    setSchemaMetadata({
+      ...schemaMetadata,
+      selectedLanguage,
+    });
   };
 
   const handleInputChange = (event, nodeItem) => {
