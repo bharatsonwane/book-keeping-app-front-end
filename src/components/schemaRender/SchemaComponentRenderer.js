@@ -428,7 +428,22 @@ export function SchemaComponentRenderer({
   );
 
   const renderContent = () => {
-    if (node.isArray && node.dataMappingName) {
+    if (tabList && tabList.length > 0) {
+      return (
+        <SchemaTabRenderer
+          key={`tabField_${node.label}`}
+          sqlQueryList={sqlQueryList}
+          node={node}
+          prevNode={prevNode}
+          dataObject={dataObject}
+          formValidationObject={formValidationObject}
+          schemaMetadata={schemaMetadata}
+          handleActionTrigger={handleActionTrigger}
+        />
+      );
+    }
+
+    if (node.type === "arrayItem" && node.dataMappingName) {
       const arrayData = _.get(dataObject, node.dataMappingName, []);
 
       const handleAddItem = () => {
@@ -469,20 +484,25 @@ export function SchemaComponentRenderer({
           }}
         >
           <div style={{ fontWeight: 600 }}>{node.label}</div>
-          {arrayData.map((item, idx) => (
+          {arrayData.map((_, idx) => (
             <div
               className="row"
               style={{ border: "1px solid #eee", padding: 10 }}
             >
-              <ChildNodesRenderer
-                children={node.children}
-                schemaMetadata={schemaMetadata}
-                dataObject={item}
-                formValidationObject={formValidationObject}
-                handleActionTrigger={handleActionTrigger}
-                parentDataMappingName={`${node.dataMappingName}[${idx}]`}
-              />
-
+              {node?.children?.map((childNode, childIndex) => {
+                const newChildNode = { ...childNode };
+                newChildNode.dataMappingName = `${node.dataMappingName}[${idx}].${childNode.childDataMappingName}`;
+                return (
+                  <SchemaComponentRenderer
+                    key={`${node.type}_${newChildNode.type}_${childIndex}`}
+                    sqlQueryList={sqlQueryList}
+                    node={newChildNode}
+                    dataObject={dataObject}
+                    formValidationObject={formValidationObject}
+                    handleActionTrigger={handleActionTrigger}
+                  />
+                );
+              })}
               <button
                 type="button"
                 onClick={() => handleRemoveItem(idx)}
@@ -496,21 +516,6 @@ export function SchemaComponentRenderer({
             Add {node.label}
           </button>
         </div>
-      );
-    }
-
-    if (tabList && tabList.length > 0) {
-      return (
-        <SchemaTabRenderer
-          key={`tabField_${node.label}`}
-          sqlQueryList={sqlQueryList}
-          node={node}
-          prevNode={prevNode}
-          dataObject={dataObject}
-          formValidationObject={formValidationObject}
-          schemaMetadata={schemaMetadata}
-          handleActionTrigger={handleActionTrigger}
-        />
       );
     }
 
