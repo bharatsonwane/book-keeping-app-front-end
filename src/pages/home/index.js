@@ -24,7 +24,7 @@ const Home = () => {
           element={<SchemaMainRenderer />}
         ></Route>
         <Route
-          path={":actionType/:schemaName/:id"}
+          path={":uiActionType/:schemaName/:id"}
           element={<SchemaMainRenderer />}
         ></Route>
       </Routes>

@@ -23,7 +23,7 @@ function SchemaMainRenderer() {
    * schemaName: schema name
    * id: id of the record
    */
-  const { schemaName, actionType, id } = useParams();
+  const { schemaName, uiActionType, id } = useParams();
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ function SchemaMainRenderer() {
   const [schema, setSchema] = useState(null);
 
   const [schemaMetadata, setSchemaMetadata] = useState({
-    formReadOnly: actionType === SCHEMA_CONSTANT.VIEW ? true : false,
+    formReadOnly: uiActionType === SCHEMA_CONSTANT.VIEW ? true : false,
     selectedLanguage: "en",
     languageList: [
       // { label: "English", value: "en" },

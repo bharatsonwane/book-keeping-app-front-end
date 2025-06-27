@@ -52,6 +52,7 @@ const Home = () => {
   const handleRowClick = (e, nodeItem) => {
     const onClick = nodeItem.onRowClick;
     if (onClick && onClick.navigationPath) {
+      onClick.uiActionType = "view";
       let path = onClick.navigationPath;
       Object.keys(onClick).forEach((key) => {
         if (key !== "navigationPath") {
