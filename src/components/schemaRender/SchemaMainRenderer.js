@@ -20,7 +20,7 @@ import { foodDetailSchema } from "src/helper/schema/foodSchema";
 function SchemaMainRenderer() {
   /**
    * actionType: create, update, view
-   * schemaName: schema name
+   * schemaName: schemaData name
    * id: id of the record
    */
   const { schemaName, uiActionType, id } = useParams();
@@ -28,7 +28,7 @@ function SchemaMainRenderer() {
 
   const dispatch = useDispatch();
 
-  const [schema, setSchema] = useState(null);
+  const [schemaData, setSchemaData] = useState(null);
 
   const [schemaMetadata, setSchemaMetadata] = useState({
     formReadOnly: uiActionType === SCHEMA_CONSTANT.VIEW ? true : false,
@@ -54,14 +54,14 @@ function SchemaMainRenderer() {
 
   const getSchema = async () => {
     try {
-      // const responseData = await dispatch(
-      //   getSchemaByNameAction({ schemaName: schemaName })
-      // ).unwrap();
+      const responseData = await dispatch(
+        getSchemaByNameAction({ schemaName: schemaName })
+      ).unwrap();
 
-      // const schemaData = responseData.data;
-      const schemaData = foodDetailSchema;
+      const schemaData = responseData.data;
+      // const schemaData = foodDetailSchema;
 
-      setSchema(schemaData);
+      setSchemaData(schemaData);
 
       const sqlQueryList = schemaData?.sqlQueryList || [];
       const defaultQueryName = schemaData?.defaultQueryName || "";
@@ -85,10 +85,11 @@ function SchemaMainRenderer() {
     } catch (error) {}
   };
 
-  const handleChangeLanguage = (selectedLanguage) => {
+  const handleSchemaMetadataChange = (e) => {
+    const { name, value } = e.target;
     setSchemaMetadata({
       ...schemaMetadata,
-      selectedLanguage,
+      [name]: value,
     });
   };
 
@@ -124,7 +125,7 @@ function SchemaMainRenderer() {
   const handleValidateAllFormField = async () => {
     try {
       const response = await getValidationErrorForSchemaWithZod(
-        schema,
+        schemaData,
         formDataObject
       );
 
@@ -151,7 +152,7 @@ function SchemaMainRenderer() {
 
       const { queryName } = e.target;
 
-      const sqlQueryList = schema?.sqlQueryList || [];
+      const sqlQueryList = schemaData?.sqlQueryList || [];
 
       const defaultQueryObject = sqlQueryList.find(
         (ele) => ele.queryName === queryName
@@ -175,8 +176,8 @@ function SchemaMainRenderer() {
   };
 
   const handleActionTrigger = (e, nodeItem) => {
-    if (e.actionType === SCHEMA_CONSTANT.LANGUAGE_CHANGE) {
-      handleChangeLanguage(e.target.value);
+    if (e.actionType === SCHEMA_CONSTANT.onSchemaMetadataChange) {
+      handleSchemaMetadataChange(e);
     } else if (e.actionType === SCHEMA_CONSTANT.onChange) {
       handleInputChange(e, nodeItem);
     } else if (e.actionType === SCHEMA_CONSTANT.onBlur) {
@@ -194,7 +195,7 @@ function SchemaMainRenderer() {
       className="col-xl-9 col-xxl-8 col-sm-12"
       style={{ width: "100%", height: "100%" }}
     >
-      {schema && formDataObject && (
+      {schemaData && formDataObject && (
         <React.Fragment>
           <div
             style={{
@@ -205,8 +206,8 @@ function SchemaMainRenderer() {
             <div className="row">
               <SchemaComponentRenderer
                 schemaMetadata={schemaMetadata}
-                sqlQueryList={schema?.sqlQueryList}
-                node={schema}
+                sqlQueryList={schemaData?.sqlQueryList}
+                node={schemaData}
                 dataObject={formDataObject}
                 formValidationObject={formValidationObject}
                 handleActionTrigger={handleActionTrigger}

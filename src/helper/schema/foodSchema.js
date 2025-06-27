@@ -1,4 +1,4 @@
-export const foodDetailSchema = {
+export   const foodDetailSchema = {
   name: "foodDetailSchema",
   label: "Food Detail Schema",
   type: "schema",
@@ -11,17 +11,13 @@ export const foodDetailSchema = {
       children: [
         {
           type: "headingWithButton",
-          label: "Save",
+          label: "Food Detail",
           onCreate: {
             queryName: "saveFoodDetail",
           },
           onUpdate: {
             queryName: "updateFoodDetail",
           },
-          // onView: {
-          //   navigationPath: "/home/view/:schemaName/:id",
-          //   queryName: "getFoodDetailById",
-          // },
         },
       ],
     },
@@ -42,26 +38,6 @@ export const foodDetailSchema = {
                   label: "Food Name",
                   type: "text",
                   dataMappingName: "name",
-                  validationType: "string",
-                  validations: [
-                    {
-                      type: "min",
-                      params: [3, "Must be at least 3 characters"],
-                    },
-                    {
-                      type: "max",
-                      params: [50, "Must be at most 50 characters"],
-                    },
-                    { type: "trim" },
-                  ],
-                  readOnly: false,
-                  isMultilingual: false,
-                  isShowInTable: true,
-                },
-                {
-                  label: "Food ID",
-                  type: "text",
-                  dataMappingName: "id",
                   validationType: "string",
                   validations: [
                     {
@@ -257,6 +233,7 @@ export const foodDetailSchema = {
         f.description,
           
         jsonb_build_object(
+          'id', n.id,
           'calories', n.calories,
           'protein', n.protein,
           'carbohydrates', n.carbohydrates,
@@ -267,6 +244,7 @@ export const foodDetailSchema = {
         (
           SELECT jsonb_agg(
             jsonb_build_object(
+              'id', i.id,
               'name', i.name,
               'quantity', i.quantity,
               'unit', i.unit
@@ -279,6 +257,7 @@ export const foodDetailSchema = {
         (
           SELECT jsonb_agg(
             jsonb_build_object(
+              'id', ins.id,
               'stepNumber', ins."stepNumber",
               'stepDescription', ins."stepDescription"
             )

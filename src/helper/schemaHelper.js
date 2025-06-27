@@ -1,10 +1,11 @@
 import _ from "lodash";
 
 export const SCHEMA_CONSTANT = {
+  onSchemaMetadataChange: "onSchemaMetadataChange",
   onChange: "onChange",
   onBlur: "onBlur",
   onClick: "onClick",
-  LANGUAGE_CHANGE: "languageChange",
+
   onRowClick: "onRowClick",
   onCreate: "onCreate",
   onUpdate: "onUpdate",
@@ -76,7 +77,9 @@ export const getInitialSchemaValueObject = (schema) => {
   const valueObject = {};
 
   const recursiveAction = (node) => {
-    if (node.children) {
+    if (node.type === "arrayItem") {
+      _.set(valueObject, node.dataMappingName, []);
+    } else if (node.children) {
       for (const child of node.children) {
         recursiveAction(child);
       }
@@ -89,4 +92,3 @@ export const getInitialSchemaValueObject = (schema) => {
 
   return valueObject;
 };
-

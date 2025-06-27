@@ -184,8 +184,11 @@ const RenderMultilingualField = React.memo(function RenderMultilingualField({
 
   const handleLanguageChange = (languageValue) => {
     const event = {
-      actionType: SCHEMA_CONSTANT.LANGUAGE_CHANGE,
-      target: { value: languageValue },
+      actionType: SCHEMA_CONSTANT.onSchemaMetadataChange,
+      target: {
+        name: "selectedLanguage",
+        value: languageValue,
+      },
     };
     handleActionTrigger(event, node);
   };

@@ -4,21 +4,13 @@ import { useParams } from "react-router-dom";
 import { SCHEMA_CONSTANT } from "src/helper/schemaHelper";
 
 export function HeadingWithButton(props) {
-  const { node, handleActionTrigger = (e, node) => {} } = props;
+  const { node, formReadOnly, handleActionTrigger = (e, node) => {} } = props;
   const { label } = node;
 
   const { schemaName, uiActionType, id } = useParams();
 
-  const handleOnClick = () => {
-    if (node.onCreate) {
-      const event = {
-        actionType: SCHEMA_CONSTANT.onCreate,
-        target: {
-          queryName: node.onCreate.queryName,
-        },
-      };
-      handleActionTrigger(event, node.onCreate);
-    } else if (node.onUpdate) {
+  const handleCreateOrUpdate = () => {
+    if (node.onUpdate && id) {
       const event = {
         actionType: SCHEMA_CONSTANT.onUpdate,
         target: {
@@ -27,7 +19,26 @@ export function HeadingWithButton(props) {
         },
       };
       handleActionTrigger(event, node.onUpdate);
+    } else if (node.onCreate) {
+      const event = {
+        actionType: SCHEMA_CONSTANT.onCreate,
+        target: {
+          queryName: node.onCreate.queryName,
+        },
+      };
+      handleActionTrigger(event, node.onCreate);
     }
+  };
+
+  const handleEdit = () => {
+    const event = {
+      actionType: SCHEMA_CONSTANT.onSchemaMetadataChange,
+      target: {
+        name: "formReadOnly",
+        value: false,
+      },
+    };
+    handleActionTrigger(event, node.onUpdate);
   };
 
   console.log("bharat", uiActionType);
@@ -37,13 +48,13 @@ export function HeadingWithButton(props) {
       className={`container-fluid d-flex flex-row-reverse justify-content-between bg-primary text-white`}
       style={{ alignItems: "center" }}
     >
-      {uiActionType === "create" ? (
+      {uiActionType === SCHEMA_CONSTANT.CREATE ? (
         <>
           <Button
             variant="contained"
             color="secondary"
             onClick={(e) => {
-              handleOnClick();
+              handleCreateOrUpdate();
             }}
             sx={{
               background: "white",
@@ -52,13 +63,37 @@ export function HeadingWithButton(props) {
               margin: "10px",
             }}
           >
-            Add Entry
+            Add
           </Button>
-          <h4>Add New Entry</h4>
+          <h4>{label}</h4>
         </>
-      ) : (
-        <></>
-      )}
+      ) : uiActionType === SCHEMA_CONSTANT.VIEW && formReadOnly === true ? (
+        <>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={(e) => {
+              handleEdit();
+            }}
+          >
+            edit
+          </Button>
+          <h4>{label}</h4>
+        </>
+      ) : uiActionType === SCHEMA_CONSTANT.VIEW && !formReadOnly ? (
+        <>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={(e) => {
+              handleCreateOrUpdate();
+            }}
+          >
+            Update
+          </Button>
+          <h4>{label}</h4>
+        </>
+      ) : null}
 
       <div className="w-20"></div>
     </div>
