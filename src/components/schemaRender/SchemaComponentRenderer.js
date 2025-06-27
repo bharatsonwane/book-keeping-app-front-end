@@ -22,6 +22,8 @@ import {
   SCHEMA_CONSTANT,
 } from "src/helper/schemaHelper";
 import { HeadingWithButton } from "../uiComponents/HeadingWithButton";
+import AddButton from "../uiComponents/AddButton";
+import RemoveButton from "../uiComponents/RemoveButton";
 
 // Custom hook for field value and validation logic
 const useFieldData = (
@@ -479,42 +481,36 @@ export function SchemaComponentRenderer({
           key={`${node.label}_${node.type}_array`}
           className="row"
           style={{
-            border: "1px solid #eee",
             padding: 10,
           }}
         >
           <div style={{ fontWeight: 600 }}>{node.label}</div>
           {arrayData.map((_, idx) => (
-            <div
-              className="row"
-              style={{ border: "1px solid #eee", padding: 10 }}
-            >
-              {node?.children?.map((childNode, childIndex) => {
-                const newChildNode = { ...childNode };
-                newChildNode.dataMappingName = `${node.dataMappingName}[${idx}].${childNode.childDataMappingName}`;
-                return (
-                  <SchemaComponentRenderer
-                    key={`${node.type}_${newChildNode.type}_${childIndex}`}
-                    sqlQueryList={sqlQueryList}
-                    node={newChildNode}
-                    dataObject={dataObject}
-                    formValidationObject={formValidationObject}
-                    handleActionTrigger={handleActionTrigger}
-                  />
-                );
-              })}
-              <button
-                type="button"
-                onClick={() => handleRemoveItem(idx)}
-                style={{ marginTop: 4 }}
-              >
+            <div style={{ border: "1px solid #eee", padding: 10, marginBottom: 10 }}>
+              <div className="row">
+                {node?.children?.map((childNode, childIndex) => {
+                  const newChildNode = { ...childNode };
+                  newChildNode.dataMappingName = `${node.dataMappingName}[${idx}].${childNode.childDataMappingName}`;
+                  return (
+                    <SchemaComponentRenderer
+                      key={`${node.type}_${newChildNode.type}_${childIndex}`}
+                      sqlQueryList={sqlQueryList}
+                      node={newChildNode}
+                      dataObject={dataObject}
+                      formValidationObject={formValidationObject}
+                      handleActionTrigger={handleActionTrigger}
+                    />
+                  );
+                })}
+              </div>
+              <RemoveButton onClick={() => handleRemoveItem(idx)}>
                 Remove
-              </button>
+              </RemoveButton>
             </div>
           ))}
-          <button type="button" onClick={handleAddItem}>
+          <AddButton onClick={handleAddItem}>
             Add {node.label}
-          </button>
+          </AddButton>
         </div>
       );
     }

@@ -15,6 +15,7 @@ import {
   getValidationErrorForFieldWithZod,
   getValidationErrorForSchemaWithZod,
 } from "src/helper/zodValidationHelper";
+import { foodDetailSchema } from "src/helper/schema/foodSchema";
 
 function SchemaMainRenderer() {
   /**
@@ -53,11 +54,12 @@ function SchemaMainRenderer() {
 
   const getSchema = async () => {
     try {
-      const responseData = await dispatch(
-        getSchemaByNameAction({ schemaName: schemaName })
-      ).unwrap();
+      // const responseData = await dispatch(
+      //   getSchemaByNameAction({ schemaName: schemaName })
+      // ).unwrap();
 
-      const schemaData = responseData.data;
+      // const schemaData = responseData.data;
+      const schemaData = foodDetailSchema;
 
       setSchema(schemaData);
 
@@ -174,9 +176,8 @@ function SchemaMainRenderer() {
         <React.Fragment>
           <div
             style={{
-              minHeight: 300,
+              minHeight: 400,
               maxHeight: "calc(100vh - 250px)",
-              overflowY: "auto",
             }}
           >
             <div className="row">
