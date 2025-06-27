@@ -6,6 +6,9 @@ export const SCHEMA_CONSTANT = {
   onClick: "onClick",
   LANGUAGE_CHANGE: "languageChange",
   onRowClick: "onRowClick",
+  onCreate: "onCreate",
+  onUpdate: "onUpdate",
+  // onView: "onView",
   // UI screen type
   VIEW: "view",
   CREATE: "create",

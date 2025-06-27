@@ -20,7 +20,7 @@ const Home = () => {
         ></Route>
         <Route path={"list/:schemaName"} element={<HomeList />}></Route>
         <Route
-          path={"create/:schemaName"}
+          path={":uiActionType/:schemaName"}
           element={<SchemaMainRenderer />}
         ></Route>
         <Route

@@ -54,12 +54,12 @@ function SchemaMainRenderer() {
 
   const getSchema = async () => {
     try {
-      const responseData = await dispatch(
-        getSchemaByNameAction({ schemaName: schemaName })
-      ).unwrap();
+      // const responseData = await dispatch(
+      //   getSchemaByNameAction({ schemaName: schemaName })
+      // ).unwrap();
 
-      const schemaData = responseData.data;
-      // const schemaData = foodDetailSchema;
+      // const schemaData = responseData.data;
+      const schemaData = foodDetailSchema;
 
       setSchema(schemaData);
 
@@ -140,19 +140,38 @@ function SchemaMainRenderer() {
     } catch (error) {}
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e, nodeItem) => {
     try {
+      debugger;
       const formValidationObject = await handleValidateAllFormField();
 
       if (Object.keys(formValidationObject.errorMessage).length > 0) {
         return;
       }
 
-      //  save data to db api call
+      const { queryName } = e.target;
 
-      //  navigate to back page
+      const sqlQueryList = schema?.sqlQueryList || [];
+
+      const defaultQueryObject = sqlQueryList.find(
+        (ele) => ele.queryName === queryName
+      );
+
+      if (defaultQueryObject) {
+        const responseData = await dispatch(
+          getDataByQueryAction({
+            query: defaultQueryObject.query,
+            dataValue: formDataObject,
+          })
+        ).unwrap();
+        setFormDataObject(responseData.data[0]);
+      }
+
       navigate(-1);
-    } catch (error) {}
+    } catch (error) {
+      debugger;
+      console.log("handleSubmit-error", error);
+    }
   };
 
   const handleActionTrigger = (e, nodeItem) => {
@@ -162,8 +181,11 @@ function SchemaMainRenderer() {
       handleInputChange(e, nodeItem);
     } else if (e.actionType === SCHEMA_CONSTANT.onBlur) {
       handleBlurChange(e, nodeItem);
-    } else if (e.actionType === SCHEMA_CONSTANT.onClick) {
-      handleSubmit();
+    } else if (
+      e.actionType === SCHEMA_CONSTANT.onCreate ||
+      e.actionType === SCHEMA_CONSTANT.onUpdate
+    ) {
+      handleSubmit(e, nodeItem);
     }
   };
 

@@ -12,9 +12,16 @@ export const foodDetailSchema = {
         {
           type: "headingWithButton",
           label: "Save",
-          onClick: () => {
-            console.log("Save");
+          onCreate: {
+            queryName: "saveFoodDetail",
           },
+          onUpdate: {
+            queryName: "updateFoodDetail",
+          },
+          // onView: {
+          //   navigationPath: "/home/view/:schemaName/:id",
+          //   queryName: "getFoodDetailById",
+          // },
         },
       ],
     },

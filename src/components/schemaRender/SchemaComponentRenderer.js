@@ -160,7 +160,13 @@ function SchemaFieldRender({
   }
 
   if (node.type === "headingWithButton") {
-    return <HeadingWithButton node={node} onClick={onClick} />;
+    return (
+      <HeadingWithButton
+        node={node}
+        handleActionTrigger={handleActionTrigger}
+        formReadOnly={schemaMetadata.formReadOnly}
+      />
+    );
   }
 
   return null;
@@ -323,7 +329,6 @@ const TabNavigation = React.memo(function TabNavigation({
 const SchemaTabRenderer = React.memo(function SchemaTabRenderer({
   node,
   prevNode,
-  sqlQueryList = [],
   schemaMetadata = {},
   dataObject = {},
   formValidationObject = {},
@@ -344,7 +349,6 @@ const SchemaTabRenderer = React.memo(function SchemaTabRenderer({
       {tabData?.type && (
         <SchemaComponentRenderer
           key={`${tabData?.type}_${tabData?.label}`}
-          sqlQueryList={sqlQueryList}
           node={tabData}
           prevNode={prevNode}
           schemaMetadata={schemaMetadata}
@@ -361,7 +365,6 @@ const SchemaTabRenderer = React.memo(function SchemaTabRenderer({
 const SectionRenderer = React.memo(function SectionRenderer({
   node,
   children,
-  sqlQueryList,
   schemaMetadata,
   dataObject,
   formValidationObject,
@@ -386,7 +389,6 @@ const SectionRenderer = React.memo(function SectionRenderer({
 // Component for rendering child nodes recursively
 const ChildNodesRenderer = React.memo(function ChildNodesRenderer({
   children,
-  sqlQueryList,
   schemaMetadata,
   dataObject,
   formValidationObject,
@@ -398,7 +400,6 @@ const ChildNodesRenderer = React.memo(function ChildNodesRenderer({
       {children?.map((childNode, index, list) => (
         <SchemaComponentRenderer
           key={`${childNode.type}_${childNode.label}_${index}`}
-          sqlQueryList={sqlQueryList}
           node={childNode}
           prevNode={index > 0 ? list[index - 1] : null}
           schemaMetadata={schemaMetadata}
@@ -413,7 +414,6 @@ const ChildNodesRenderer = React.memo(function ChildNodesRenderer({
 });
 
 export function SchemaComponentRenderer({
-  sqlQueryList = [],
   node,
   prevNode,
   schemaMetadata = {},
@@ -434,7 +434,6 @@ export function SchemaComponentRenderer({
       return (
         <SchemaTabRenderer
           key={`tabField_${node.label}`}
-          sqlQueryList={sqlQueryList}
           node={node}
           prevNode={prevNode}
           dataObject={dataObject}
@@ -486,7 +485,13 @@ export function SchemaComponentRenderer({
         >
           <div style={{ fontWeight: 600 }}>{node.label}</div>
           {arrayData.map((_, idx) => (
-            <div style={{ border: "1px solid #eee", padding: 10, marginBottom: 10 }}>
+            <div
+              style={{
+                border: "1px solid #eee",
+                padding: 10,
+                marginBottom: 10,
+              }}
+            >
               <div className="row">
                 {node?.children?.map((childNode, childIndex) => {
                   const newChildNode = { ...childNode };
@@ -494,7 +499,6 @@ export function SchemaComponentRenderer({
                   return (
                     <SchemaComponentRenderer
                       key={`${node.type}_${newChildNode.type}_${childIndex}`}
-                      sqlQueryList={sqlQueryList}
                       node={newChildNode}
                       dataObject={dataObject}
                       formValidationObject={formValidationObject}
@@ -508,9 +512,7 @@ export function SchemaComponentRenderer({
               </RemoveButton>
             </div>
           ))}
-          <AddButton onClick={handleAddItem}>
-            Add {node.label}
-          </AddButton>
+          <AddButton onClick={handleAddItem}>Add {node.label}</AddButton>
         </div>
       );
     }
@@ -519,7 +521,6 @@ export function SchemaComponentRenderer({
       return (
         <ChildNodesRenderer
           children={node.children}
-          sqlQueryList={sqlQueryList}
           schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
@@ -532,7 +533,6 @@ export function SchemaComponentRenderer({
       return (
         <ChildNodesRenderer
           children={node.children}
-          sqlQueryList={sqlQueryList}
           schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
@@ -546,7 +546,6 @@ export function SchemaComponentRenderer({
       return (
         <SectionRenderer
           node={node}
-          sqlQueryList={sqlQueryList}
           schemaMetadata={schemaMetadata}
           dataObject={dataObject}
           formValidationObject={formValidationObject}
@@ -554,7 +553,6 @@ export function SchemaComponentRenderer({
         >
           <ChildNodesRenderer
             children={node.children}
-            sqlQueryList={sqlQueryList}
             schemaMetadata={schemaMetadata}
             dataObject={dataObject}
             formValidationObject={formValidationObject}
@@ -568,7 +566,6 @@ export function SchemaComponentRenderer({
     return (
       <SchemaFieldRender
         key={`${node?.type}_${node.label}`}
-        sqlQueryList={sqlQueryList}
         node={node}
         dataObject={dataObject}
         formValidationObject={formValidationObject}
@@ -584,7 +581,6 @@ export function SchemaComponentRenderer({
         <ErrorBoundary>
           <RenderMultilingualField
             key={`multilingualTab_${node?.dataMappingName}`}
-            sqlQueryList={sqlQueryList}
             node={node}
             prevNode={prevNode}
             schemaMetadata={schemaMetadata}
