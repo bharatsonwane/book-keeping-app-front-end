@@ -54,12 +54,12 @@ function SchemaMainRenderer() {
 
   const getSchema = async () => {
     try {
-      // const responseData = await dispatch(
-      //   getSchemaByNameAction({ schemaName: schemaName })
-      // ).unwrap();
+      const responseData = await dispatch(
+        getSchemaByNameAction({ schemaName: schemaName })
+      ).unwrap();
 
-      // const schemaData = responseData.data;
-      const schemaData = foodDetailSchema;
+      const schemaData = responseData.data;
+      // const schemaData = foodDetailSchema;
 
       setSchema(schemaData);
 
