@@ -153,8 +153,6 @@ function SchemaMainRenderer() {
     } catch (error) {}
   };
 
-  // :actionType/:schemaName/:id
-
   const handleActionTrigger = (e, nodeItem) => {
     if (e.actionType === SCHEMA_CONSTANT.LANGUAGE_CHANGE) {
       handleChangeLanguage(e.target.value);

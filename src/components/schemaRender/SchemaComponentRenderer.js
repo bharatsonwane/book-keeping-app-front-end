@@ -430,33 +430,33 @@ export function SchemaComponentRenderer({
   const renderContent = () => {
     if (node.isArray && node.dataMappingName) {
       const arrayData = _.get(dataObject, node.dataMappingName, []);
-      const handleAdd = () => {
-        // Create a new empty object based on children schema
+
+      const handleAddItem = () => {
         const newItem = {};
         (node.children || []).forEach((child) => {
           newItem[child.dataMappingName] = "";
         });
         const newArray = [...arrayData, newItem];
-        // You must update the main form state here (lift this up if needed)
-        handleActionTrigger(
-          {
-            actionType: "arrayAdd",
-            dataMappingName: node.dataMappingName,
-            newArray,
+        const event = {
+          actionType: SCHEMA_CONSTANT.onChange,
+          target: {
+            value: newArray,
+            name: node.dataMappingName,
           },
-          node
-        );
+        };
+        handleActionTrigger(event, node);
       };
-      const handleRemove = (idx) => {
+
+      const handleRemoveItem = (idx) => {
         const newArray = arrayData.filter((_, i) => i !== idx);
-        handleActionTrigger(
-          {
-            actionType: "arrayRemove",
-            dataMappingName: node.dataMappingName,
-            newArray,
+        const event = {
+          actionType: SCHEMA_CONSTANT.onChange,
+          target: {
+            value: newArray,
+            name: node.dataMappingName,
           },
-          node
-        );
+        };
+        handleActionTrigger(event, node);
       };
 
       return (
@@ -485,14 +485,14 @@ export function SchemaComponentRenderer({
 
               <button
                 type="button"
-                onClick={() => handleRemove(idx)}
+                onClick={() => handleRemoveItem(idx)}
                 style={{ marginTop: 4 }}
               >
                 Remove
               </button>
             </div>
           ))}
-          <button type="button" onClick={handleAdd}>
+          <button type="button" onClick={handleAddItem}>
             Add {node.label}
           </button>
         </div>
