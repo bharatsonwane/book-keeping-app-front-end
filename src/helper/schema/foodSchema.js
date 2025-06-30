@@ -1,4 +1,4 @@
-export   const foodDetailSchema = {
+export  const foodDetailSchema = {
   name: "foodDetailSchema",
   label: "Food Detail Schema",
   type: "schema",
@@ -269,7 +269,7 @@ export   const foodDetailSchema = {
           
       FROM food f
       LEFT JOIN nutrition n ON n."foodId" = f.id
-      WHERE f.id = $[id];
+      WHERE f.id = $[data.id];
     `,
       sampleDataValue: {
         id: 16,
@@ -290,11 +290,11 @@ export   const foodDetailSchema = {
           "preparationTime",
           description
         ) VALUES (
-          $[name],
-          $[category],
-          $[cuisine],
-          $[preparationTime],
-          $[description]
+          $[data.name],
+          $[data.category],
+          $[data.cuisine],
+          $[data.preparationTime],
+          $[data.description]
         )
         RETURNING id INTO new_food_id;
 
@@ -303,20 +303,20 @@ export   const foodDetailSchema = {
           "foodId", calories, protein, carbohydrates, fats, vitamins
         ) VALUES (
           new_food_id,
-          $[nutrition.calories],
-          $[nutrition.protein],
-          $[nutrition.carbohydrates],
-          $[nutrition.fats],
-          $[nutrition.vitamins]
+          $[data.nutrition.calories],
+          $[data.nutrition.protein],
+          $[data.nutrition.carbohydrates],
+          $[data.nutrition.fats],
+          $[data.nutrition.vitamins]
         );
 
-        -- Insert ingredients
+                  -- Insert ingredients (using mixed syntax: new_food_id is local variable, item properties from array)
         INSERT INTO ingredients ("foodId", name, quantity, unit) VALUES
-        $<bulk:ingredients(new_food_id, $[name], $[quantity], $[unit])>;
+        $<bulk:$[data.ingredients](new_food_id, $[item.name], $[item.quantity], $[item.unit])>;
 
-        -- Insert instructions
+        -- Insert instructions (using mixed syntax: new_food_id is local variable, item properties from array)
         INSERT INTO instructions ("foodId", "stepNumber", "stepDescription") VALUES
-        $<bulk:instructions(new_food_id, $[stepNumber], $[stepDescription])>;
+        $<bulk:$[data.instructions](new_food_id, $[item.stepNumber], $[item.stepDescription])>;
       END $$;
     `,
       sampleDataValue: {
@@ -366,39 +366,45 @@ export   const foodDetailSchema = {
       query: `
       DO $$
       BEGIN
-        -- Update food table
+        -- Update food table  
         UPDATE food SET
-          name = $[name],
-          category = $[category],
-          cuisine = $[cuisine],
-          "preparationTime" = $[preparationTime],
-          description = $[description]
-        WHERE id = $[id];
+          name = $[data.name],
+          category = $[data.category],
+          cuisine = $[data.cuisine],
+          "preparationTime" = $[data.preparationTime],
+          description = $[data.description]
+        WHERE id = $[data.id];
 
         -- Update nutrition table
         UPDATE nutrition SET
-          calories = $[nutrition.calories],
-          protein = $[nutrition.protein],
-          carbohydrates = $[nutrition.carbohydrates],
-          fats = $[nutrition.fats],
-          vitamins = $[nutrition.vitamins]
-        WHERE "foodId" = $[id];
+          calories = $[data.nutrition.calories],
+          protein = $[data.nutrition.protein],
+          carbohydrates = $[data.nutrition.carbohydrates],
+          fats = $[data.nutrition.fats],
+          vitamins = $[data.nutrition.vitamins]
+        WHERE "foodId" = $[data.id];
 
-        -- Update ingredients
-        $<multiUpdate:ingredients(
+        -- Bulk CUD ingredients (using mixed syntax: root data ID + item properties)
+        $<bulkCudByKey:$[data.ingredients],[item.id](
+          INSERT INTO ingredients ("foodId", name, quantity, unit) 
+          VALUES ($[data.id], $[item.name], $[item.quantity], $[item.unit])
+        |
           UPDATE ingredients SET
-            name = $[name],
-            quantity = $[quantity],
-            unit = $[unit]
-          WHERE id = $[id]
+            name = $[item.name],
+            quantity = $[item.quantity],
+            unit = $[item.unit]
+          WHERE id = $[item.id]
         )>
 
-        -- Update instructions
-        $<multiUpdate:instructions(
+        -- Bulk CUD instructions (using mixed syntax: root data ID + item properties)
+        $<bulkCudByKey:$[data.instructions],[item.id](
+          INSERT INTO instructions ("foodId", "stepNumber", "stepDescription") 
+          VALUES ($[data.id], $[item.stepNumber], $[item.stepDescription])
+        |
           UPDATE instructions SET
-            "stepNumber" = $[stepNumber],
-            "stepDescription" = $[stepDescription]
-          WHERE id = $[id]
+            "stepNumber" = $[item.stepNumber],
+            "stepDescription" = $[item.stepDescription]
+          WHERE id = $[item.id]
         )>
       END $$;
     `,
@@ -418,9 +424,11 @@ export   const foodDetailSchema = {
           vitamins: "A, B12, D",
         },
         ingredients: [
-          { id: 10, name: "Paneer", quantity: "250", unit: "grams" },
-          { id: 11, name: "Butter", quantity: "3", unit: "tbsp" },
-          { id: 12, name: "Tomatoes", quantity: "4", unit: "pieces" },
+          { id: 10, name: "Paneer", quantity: "250", unit: "grams" },     // UPDATE existing (has id)
+          { id: 11, name: "Butter", quantity: "3", unit: "tbsp" },       // UPDATE existing (has id)
+          { id: 12, isDeleteForQuery: true },                            // DELETE existing (has id + delete flag)
+          { name: "Heavy Cream", quantity: "0.5", unit: "cup" },         // INSERT new (no id)
+          { name: "Garam Masala", quantity: "1", unit: "tsp" },          // INSERT new (no id)
         ],
         instructions: [
           {
@@ -435,11 +443,15 @@ export   const foodDetailSchema = {
           },
           {
             id: 23,
-            stepNumber: 3,
-            stepDescription: "Add paneer, simmer, and finish with cream.",
+            isDeleteForQuery: true,                                      // DELETE existing instruction
+          },
+          {
+            stepNumber: 4,
+            stepDescription: "Garnish with fresh coriander and serve hot.",
           },
         ],
       },
     },
+    
   ],
 };

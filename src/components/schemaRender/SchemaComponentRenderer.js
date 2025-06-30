@@ -453,7 +453,7 @@ export function SchemaComponentRenderer({
       const handleAddItem = () => {
         const newItem = {};
         (node.children || []).forEach((child) => {
-          newItem[child.dataMappingName] = "";
+          newItem[child.childDataMappingName] = "";
         });
         const newArray = [...arrayData, newItem];
         const event = {
@@ -467,7 +467,16 @@ export function SchemaComponentRenderer({
       };
 
       const handleRemoveItem = (idx) => {
-        const newArray = arrayData.filter((_, i) => i !== idx);
+        const newArray = arrayData.map((item, i) => {
+          if (i === idx) {
+            return {
+              ...item,
+              isDeleteFromDB: true,
+            };
+          }
+          return item;
+        });
+
         const event = {
           actionType: SCHEMA_CONSTANT.onChange,
           target: {
@@ -475,6 +484,7 @@ export function SchemaComponentRenderer({
             name: node.dataMappingName,
           },
         };
+
         handleActionTrigger(event, node);
       };
 
@@ -487,33 +497,38 @@ export function SchemaComponentRenderer({
           }}
         >
           <div style={{ fontWeight: 600 }}>{node.label}</div>
-          {arrayData.map((_, idx) => (
-            <div
-              style={{
-                border: "1px solid #eee",
-                padding: 10,
-                marginBottom: 10,
-              }}
-            >
-              <div className="row">
-                {node?.children?.map((childNode, childIndex) => {
-                  const newChildNode = { ...childNode };
-                  newChildNode.dataMappingName = `${node.dataMappingName}[${idx}].${childNode.childDataMappingName}`;
-                  return (
-                    <SchemaComponentRenderer
-                      key={`${node.type}_${newChildNode.type}_${childIndex}`}
-                      node={newChildNode}
-                      dataObject={dataObject}
-                      formValidationObject={formValidationObject}
-                      handleActionTrigger={handleActionTrigger}
-                    />
-                  );
-                })}
-              </div>
-              <RemoveButton onClick={() => handleRemoveItem(idx)}>
-                Remove
-              </RemoveButton>
-            </div>
+          {arrayData.map((dataItem, idx) => (
+            <Fragment>
+              {dataItem.isDeleteFromDB ? null : (
+                <div
+                  style={{
+                    border: "1px solid #eee",
+                    padding: 10,
+                    marginBottom: 10,
+                  }}
+                >
+                  <div className="row">
+                    {node?.children?.map((childNode, childIndex) => {
+                      const newChildNode = { ...childNode };
+                      newChildNode.dataMappingName = `${node.dataMappingName}[${idx}].${childNode.childDataMappingName}`;
+
+                      return (
+                        <SchemaComponentRenderer
+                          key={`${node.type}_${newChildNode.type}_${childIndex}`}
+                          node={newChildNode}
+                          dataObject={dataObject}
+                          formValidationObject={formValidationObject}
+                          handleActionTrigger={handleActionTrigger}
+                        />
+                      );
+                    })}
+                  </div>
+                  <RemoveButton onClick={() => handleRemoveItem(idx)}>
+                    Remove
+                  </RemoveButton>
+                </div>
+              )}
+            </Fragment>
           ))}
           <AddButton onClick={handleAddItem}>Add {node.label}</AddButton>
         </div>

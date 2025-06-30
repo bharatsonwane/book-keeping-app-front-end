@@ -41,8 +41,6 @@ export function HeadingWithButton(props) {
     handleActionTrigger(event, node.onUpdate);
   };
 
-  console.log("bharat", uiActionType);
-
   return (
     <div
       className={`container-fluid d-flex flex-row-reverse justify-content-between bg-primary text-white`}
